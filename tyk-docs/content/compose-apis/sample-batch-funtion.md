@@ -19,11 +19,11 @@ The most common use case for this functionality, as we see it, is to provide som
 function batchTest(request, session, config) {
   // Set up a response object
   var response = {
-    Body: ""
+    Body: "",
     Headers: {
       "test": "virtual-header-1",
       "test-2": "virtual-header-2",
-    "content-type": "application/json"
+      "content-type": "application/json"
     },
     Code: 200
   }
