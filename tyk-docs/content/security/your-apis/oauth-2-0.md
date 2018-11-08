@@ -11,15 +11,15 @@ Inserting an API gateway into an OAuth 2.0 flow is quite tricky, as OAuth assume
 
 Tyk has two methods you can use to enable OAuth 2.0
 
-### Option 1 - use standard auth tokens
+### Option 1 - Use Standard Authorisation Tokens
 
 The first is to integrate a standard OAuth 2.0 flow into your application using one of the many OAuth libraries that exist for popular frameworks and languages. And then when your API issues a token, use the Tyk REST API to create a key session for your own generated key.
 
-Set up your API to use [standard tokens][1] and set the Authorisation header to be `Authorization`, Tyk will now treat the `auth_token` as any other, respecting it's expiry date and any access control mechanisms that may be in place. It may be the case that you will need to put the OAuth `/access` and `/authorize` endpoints into the `ignored_paths` list of your API version to ensure that those requests reach your API.
+Set up your API to use [standard tokens][1] and set the Authorisation header to be `Authorization`, Tyk will now treat the `auth_token` as any other, respecting its expiry date and any access control mechanisms that may be in place. It may be the case that you will need to put the OAuth `/access` and `/authorize` endpoints into the `ignored_paths` list of your API version to ensure that those requests reach your API.
 
-### Option 2 - use the Tyk OAuth flow
+### Option 2 - Use the Tyk OAuth Flow
 
-Tyk can act as a full blown OAuth 2.0 provider for Authorisation an access tokens, and all your application would need to integrate with is Tyk's API and notification endpoints.
+Tyk can act as a full blown OAuth 2.0 provider for Authorisation an access tokens, and all your application would need is to integrate with Tyk's API and notification endpoints.
 
 <iframe width="870" height="480" src="https://www.youtube.com/embed/C4CUDTIHynk" frameborder="0" gesture="media" allowfullscreen></iframe>
 
@@ -32,7 +32,7 @@ Tyk supports the following grants:
 
 The Tyk OAuth flow is described in the following sections.
 
-#### Authorisation token flow (e.g. server-side web apps)
+#### Authorisation Token Flow (e.g. server-side web apps)
 
 1.  Resource owner registers a new Client ID with Tyk
 2.  Client makes a request on behalf of an end user to `/oauth/authorize/` on your Tyk instance `listen_path`
@@ -51,7 +51,7 @@ This seems like a complicated process and very verbose - however in actuality, t
 *   Step (4) Creating a page to receive the OAuth POST request, log the user in, authorise the client ID and redirect them back to the client app
 *   Step (9) Create a webhook endpoint that accepts a POST request in order to store and update OAuth key data
 
-##### Access token flow (e.g. mobile apps, single-page web apps)
+##### Access Token Flow (e.g. mobile apps, single-page web apps)
 
 1.  Resource owner registers a new Client ID with Tyk
 2.  Client makes a request on behalf of an end user to `/oauth/authorize/` on your Tyk instance `listen_path`
@@ -63,7 +63,7 @@ This seems like a complicated process and very verbose - however in actuality, t
 
 If this mode is used, only steps (1) and (4) are required, however the client cannot use refresh tokens to update access to the API.
 
-#### Enabling OAuth in your API
+#### Enabling OAuth in Your API
 
 To get OAuth set up in your API configuration, you will need to set up your API Definition like so:
 
@@ -95,7 +95,7 @@ As can be seen - a lot more configuration required than the other methods. The d
 
 The key elements to take into account here are the enabling of the `use_oauth2` flag and the `notifications` section.
 
-#### Setting quotas and limits
+#### Setting Quotas and Limits
 
 (See also bound policies below)
 
@@ -136,7 +136,7 @@ What Tyk does with this data is as follows:
 *   If the request is an auth-code request, then when an access token is requested, the `key_rules` is decoded and used to generate the new key.
 *   If the request is by your app and is for a token, then the key is generated directly from this data.
 
-#### Using bound policies with OAuth Client IDs
+#### Using Bound Policies with OAuth Client IDs
 
 [As of v2.2]
 

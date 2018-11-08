@@ -6,6 +6,9 @@ menu:
     parent: "Tyk Rest API"
 weight: 7 
 ---
+Tyk uses two methods for implementing OAuth 2.0. Firstly, You can use Standard Authorisation tokens. You set up your API to use standard tokens and set the Authorisation header to be `Authorization`, Tyk will now treat the `auth_token` as any other, respecting its expiry date and any access control mechanisms that may be in place. It may be the case that you will need to put the OAuth `/access` and `/authorize` endpoints into the `ignored_paths` list of your API version to ensure that those requests reach your API.
+
+Secondly you can use Tyk's OAuth flow. Tyk acts as a full blown OAuth 2.0 provider for Authorisation access tokens, and all your application would need is to integrate with Tyk's API and notification endpoints. See [OAuth 2.0](https://tyk.io/docs/security/your-apis/oauth-2-0/) for more details
 
 ### Create new OAuth Client
 

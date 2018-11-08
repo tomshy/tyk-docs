@@ -8,6 +8,10 @@ tags:
     description:  |-
       Keys allow you to control access to your API. You can control Usage Quotas, Rate Limiting and which APIs a Key is applied to. You can also add Authentication to a Key. This section describes how to create and manage your Keys.
   - name: OAuth
+    description:  |-
+      Tyk uses two methods for implementing OAuth 2.0. Firstly, You can use Standard Authorisation tokens. You set up your API to use standard tokens and set the Authorisation header to be Authorization, Tyk will now treat the auth_token as any other, respecting its expiry date and any access control mechanisms that may be in place. It may be the case that you will need to put the OAuth /access and /authorize endpoints into the ignored_paths list of your API version to ensure that those requests reach your API.
+
+      Secondly you can use Tyk's OAuth flow. Tyk acts as a full blown OAuth 2.0 provider for Authorisation access tokens, and all your application would need is to integrate with Tyk's API and notification endpoints. 
   - name: Cache Invalidation
     description:  |-
       Sometimes a cache might contain stale data, or it may just need to be cleared because of an invalid configuration. This call will purge all keys associated with a cache on an API-by-API basis.
