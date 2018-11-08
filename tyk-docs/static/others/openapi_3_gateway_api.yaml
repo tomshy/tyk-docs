@@ -1,0 +1,1612 @@
+openapi: 3.0.0
+info:
+  description: The code below describes the Tyk Gateway API
+  title: Tyk Gateway API
+  version: 2.8.0
+tags:
+  - name: Keys
+  - name: OAuth
+  - name: Cache Invalidation
+    description:  |-
+      Sometimes a cache might contain stale data, or it may just need to be cleared because of an invalid configuration. This call will purge all keys associated with a cache on an API-by-API basis.
+  - name: Hot Reload
+    description:  |-
+      Tyk is capable of reloading configurations without having to stop serving requests, this means that API configurations can be added at runtime, or even modified at runtime and those rules applied immediately without any downtime. You can add a ?block=true, which will block a response, until the reload is performed. This can be useful in scripting environments like CI/CD workflows.
+
+      To reload a whole group of Tyk nodes (without using the Dashboard or host manager), you can send an API request to a single node, this node will then send a notification through the pub/sub infrastructure to all other listening nodes (including the host manager if it is being used to manage NginX) which will then trigger a global reload.
+  - name: Health Checking
+  - name: Organisation Quotas
+    description: |-
+      It is possible to force API quota and rate limit across all keys that belong to a specific organisation ID. Rate limiting on an organisation level is useful for creating tiered access levels and trial accounts.
+
+      The Organisation rate limiting middleware works with both Quotas and Rate Limiters. In order to manage this functionality, a simple API has been put in place to manage these sessions.
+
+      Although the Organisation session-limiter uses the same session object, all other security keys are optional as they are not used.
+  - name: Batch requests
+    description: |-
+      Tyk supports batch requests, so a client makes a single request to the API but gets a compound response object back.
+  
+      To enable batch request support, set the `enable_batch_request_support` value to `true`
+  
+      This is especially handy if clients have complex requests that have multiple synchronous dependencies and do not wish to have the entire request / response cycle running for each event.
+  
+      Batch requests that come into Tyk are run through the whole Tyk machinery and use a relative path to prevent spamming. This means that a batch request to Tyk for three resources with the same API key will have three requests applied to their session quota and request limiting could become active if they are being throttled.
+  
+      Tyk reconstructs the API request based on the data in the batch request. This is to ensure that Tyk is not being used to proxy requests to other hosts outside of the upstream API being accessed.
+
+      Batch requests are created by POSTing to the `/{listen_path}/tyk/batch/` endpoint.
+  - name: APIs
+    description: |-
+      **Note: Applies only to Tyk Gateway Community Edition**
+      
+      API Management is very simple using the Tyk REST API: each update only affects the underlying file, and this endpoint will only work with disk based installations, not Database-backed ones. 
+      
+      API's that are added this way are flushed to to disk into the app_path folder using the format: `{api-id}.json`. Updating existing API's that use a different naming convention will cause those API's to be added, which could subsequently lead to a loading error and crash if they use the same listen_path.
+      
+      These methods only work on a single API node. If updating a cluster, it is important to ensure that all nodes are updated before initiating a reload.
+
+
+paths:
+  /apis:
+    get:
+      description: |-
+        List APIs
+         Only if used without the Tyk Dashboard
+      tags:
+        - APIs
+      operationId: listApis
+      responses:
+        '200':
+          description: List of API definitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/APIDefinition'
+    post:
+      description: |-
+        Create API
+         A single Tyk node can have its API Definitions queried, deleted and updated remotely. This functionality enables you to remotely update your Tyk definitions without having to manage the files manually.
+      tags:
+        - APIs
+      operationId: createApi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/APIDefinition"
+            example:
+              name: "TestAPI"
+              use_keyless: true
+              active: true
+              proxy:
+                listen_path: "/test"
+      responses:
+        '200':
+          description: API created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/apiModifyKeySuccess"
+              example:
+                status: "ok"
+                action: "created"
+                key: "{...API JSON definition...}"
+        '400':
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/apiStatusMessage"
+              example:
+                status: "error"
+                message: "Malformed API data"
+  '/apis/{apiID}':
+    parameters:
+      - description: The API ID
+        name: apiID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      description: |-
+        Get API definition
+        Only if used without the Tyk Dashboard
+      tags:
+        - APIs
+      operationId: getApi
+      responses:
+        '200':
+          description: API definition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIDefinition"
+    put:
+      description: |
+        Updating an API definition uses the same signature an object as a `POST`, however it will first ensure that the API ID that is being updated is the same as the one in the object being `PUT`.
+        
+        
+        Updating will completely replace the file descriptor and will not change an API Definition that has already been loaded, the hot-reload endpoint will need to be called to push the new definition to live.
+      tags:
+        - APIs
+      operationId: updateApi
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/APIDefinition"
+            example:
+              api_id: "apiID"
+              name: "TestAPI"
+              use_keyless: true
+              active: true
+              proxy:
+                listen_path: "/test"
+      responses:
+        '200':
+          description: API updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/apiModifyKeySuccess"
+              example:
+                status: "ok"
+                action: "updated"
+                key: "{...API JSON definition...}"
+        '400':
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/apiStatusMessage"
+              example:
+                status: "error"
+                message: "Malformed API data"
+                
+    delete:
+      description: |-
+        Deleting an API definition will remove the file from the file store, the API definition will NOT be unloaded, a separate reload request will need to be made to disable the API endpoint.
+      tags:
+        - APIs
+      operationId: deleteApi
+      responses:
+        '200':
+          description: API deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              example:
+                response:
+                  value: API deleted
+            status:
+              example:
+                response:
+                  value: ok
+        '400':
+          description: No API ID specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              example:
+                response:
+                  value: API ID not specified
+            status:
+              example:
+                response:
+                  value: error
+  '/cache/{apiID}':
+    parameters:
+      - description: The API ID
+        name: apiID
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      description: Invalidate cache
+      tags:
+        - Cache Invalidation
+      operationId: invalidateCache
+      responses:
+        '200':
+          description: Invalidate cache
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              example:
+                response:
+                  value: cache invalidated
+            status:
+              example:
+                response:
+                  value: ok
+  /keys:
+    get:
+      description: List All Keys
+      tags:
+        - Keys
+      operationId: listKeys
+      responses:
+        '200':
+          description: List of all API keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+    post:
+      description: Add an existing Key
+      tags:
+        - Keys
+      operationId: addKey
+      responses:
+        '200':
+          description: New Key added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiModifyKeySuccess'
+            action:
+              example:
+                response:
+                  value: created
+            key:
+              example:
+                response:
+                  value: '{...KEY JSON definition...}'
+            status:
+              examples:
+                response:
+                  value: ok
+        '400':
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              examples:
+                response:
+                  value: Malformed Key data
+            status:
+              examples:
+                response:
+                  value: error
+  '/keys/{keyID}':
+    parameters:
+      - description: The Key ID
+        name: keyID
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      description: Get a Key
+      tags:
+        - Keys
+      operationId: getKey
+      responses:
+        '200':
+          description: Key object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionState'
+    put:
+      description: Update a Key
+      tags:
+        - Keys
+      operationId: updateKey
+      responses:
+        '200':
+          description: Key updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiModifyKeySuccess'
+            action:
+              example:
+                response:
+                  value: updated
+            status:
+              example:
+                response:
+                  value: ok
+        '400':
+          description: No or incorrect Key ID specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              example:
+                response:
+                  value: Key ID not specified
+            status:
+              examples:
+                response:
+                  value: error
+    delete:
+      description: Delete Key
+      tags:
+        - Keys
+      operationId: deleteKey
+      responses:
+        '200':
+          description: Key deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              example:
+                response:
+                  value: Key deleted
+            status:
+              examples:
+                response:
+                  value: ok
+        '400':
+          description: No Key ID specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiStatusMessage'
+            message:
+              examples:
+                response:
+                  value: Key ID not specified
+            status:
+              example:
+                response:
+                  value: error
+  /oauth/clients/create:
+    post:
+      description: Create an OAuth client
+      tags:
+        - OAuth
+      operationId: createOAuthClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewClientRequest"
+            example:
+              client_id: test
+              api_id: id
+              policy_id: policy
+      responses:
+        '200':
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewClientRequest'
+  '/oauth/clients/{apiID}':
+    get:
+      description: List OAuth clients
+      tags:
+        - OAuth
+      operationId: listOAuthClients
+      parameters:
+        - description: The API ID
+          name: apiID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get OAuth client details or a list of OAuth clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewClientRequest'
+  '/oauth/clients/{apiID}/{keyName}':
+    get:
+      description: Get OAuth client
+      tags:
+        - OAuth
+      operationId: getOAuthClient
+      parameters:
+        - description: The API ID
+          name: apiID
+          in: path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+        - description: The Client ID
+          name: keyName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get OAuth client details or a list of OAuth clients
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewClientRequest'
+    delete:
+      description: Delete oAuth client
+      tags:
+        - OAuth
+      operationId: deleteOAuthClient
+      parameters:
+        - description: The API ID
+          name: apiID
+          in: path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+        - description: The Client ID
+          name: keyName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OAuth client deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/apiModifyKeySuccess'
+            action:
+              example:
+                response:
+                  value: deleted
+            status:
+              examples:
+                response:
+                  value: ok
+  '/oauth/clients/{apiID}/{keyName}/tokens':
+    get:
+      description: Get OAuth client tokens
+      tags:
+        - OAuth
+      operationId: getOAuthClientTokens
+      parameters:
+        - description: The API ID
+          name: apiID
+          in: path
+          required: true
+          schema:
+            type: string
+            minimum: 1
+        - description: The Client ID
+          name: keyName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get a list of tokens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  '/oauth/refresh/{keyName}':
+    delete:
+      description: Invalidate OAuth refresh token
+      tags:
+        - OAuth
+      operationId: invalidateOAuthRefresh
+      parameters:
+        - description: The API id
+          name: api_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - description: Refresh token
+          name: keyName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiModifyKeySuccess'
+  /reload:
+    get:
+      description: Reloads a single Tyk Gateway instance
+      tags:
+        - Reload
+      operationId: reload
+      responses:
+        '200':
+          $ref: '#/components/responses/apiStatusMessage'
+  /reload/group:
+    get:
+      description: Reloads all the Tyk Gateways in a cluster
+      tags:
+        - Reload
+      operationId: reloadGroup
+      responses:
+        '200':
+          $ref: '#/components/responses/apiStatusMessage'
+security:
+  - api_key: []
+servers:
+  - url: 'http://localhost/tyk/'
+  - url: 'https://localhost/tyk/'
+components:
+  responses:
+    apiModifyKeySuccess:
+      description: apiModifyKeySuccess represents when a Key modification was successful
+      headers:
+        action:
+          schema:
+            type: string
+        key:
+          schema:
+            type: string
+        key_hash:
+          schema:
+            type: string
+        status:
+          schema:
+            type: string
+    apiStatusMessage:
+      description: apiStatusMessage represents an API status message
+      headers:
+        message:
+          description: Response details
+          schema:
+            type: string
+        status:
+          description: Status can be either `ok` or `error`
+          schema:
+            type: string
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-Tyk-Authorization
+      in: header
+  schemas:
+    APIDefinition:
+      type: object
+      title: >-
+        APIDefinition represents the configuration for a single proxied API and
+        it's versions.
+      properties:
+        CORS:
+          type: object
+          properties:
+            allow_credentials:
+              type: boolean
+            allowed_headers:
+              type: array
+              items:
+                type: string
+            allowed_methods:
+              type: array
+              items:
+                type: string
+            allowed_origins:
+              type: array
+              items:
+                type: string
+            debug:
+              type: boolean
+            enable:
+              type: boolean
+            exposed_headers:
+              type: array
+              items:
+                type: string
+            max_age:
+              type: integer
+              format: int64
+            options_passthrough:
+              type: boolean
+        active:
+          type: boolean
+        allowed_ips:
+          type: array
+          items:
+            type: string
+        api_id:
+          type: string
+        auth:
+          $ref: '#/components/schemas/Auth'
+        auth_provider:
+          $ref: '#/components/schemas/AuthProviderMeta'
+        base_identity_provided_by:
+          $ref: '#/components/schemas/AuthTypeEnum'
+        blacklisted_ips:
+          type: array
+          items:
+            type: string
+        cache_options:
+          $ref: '#/components/schemas/CacheOptions'
+        client_certificates:
+          type: array
+          items:
+            type: string
+        config_data:
+          type: object
+          additionalProperties:
+            type: object
+        custom_middleware:
+          $ref: '#/components/schemas/MiddlewareSection'
+        custom_middleware_bundle:
+          type: string
+        definition:
+          type: object
+          properties:
+            key:
+              type: string
+            location:
+              type: string
+            strip_path:
+              type: boolean
+        disable_quota:
+          type: boolean
+        disable_rate_limit:
+          type: boolean
+        do_not_track:
+          type: boolean
+        domain:
+          type: string
+        dont_set_quota_on_create:
+          type: boolean
+        enable_batch_request_support:
+          type: boolean
+        enable_context_vars:
+          type: boolean
+        enable_coprocess_auth:
+          type: boolean
+        enable_ip_blacklisting:
+          type: boolean
+        enable_ip_whitelisting:
+          type: boolean
+        enable_jwt:
+          type: boolean
+        enable_signature_checking:
+          type: boolean
+        event_handlers:
+          $ref: '#/components/schemas/EventHandlerMetaConfig'
+        expire_analytics_after:
+          type: integer
+          format: int64
+        global_rate_limit:
+          $ref: '#/components/schemas/GlobalRateLimit'
+        hmac_allowed_clock_skew:
+          type: number
+          format: double
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        jwt_client_base_field:
+          type: string
+        jwt_disable_expires_at_validation:
+          type: boolean
+        jwt_disable_issued_at_validation:
+          type: boolean
+        jwt_disable_not_before_validation:
+          type: boolean
+        jwt_identity_base_field:
+          type: string
+        jwt_policy_field_name:
+          type: string
+        jwt_signing_method:
+          type: string
+        jwt_skip_kid:
+          type: boolean
+        jwt_source:
+          type: string
+        name:
+          type: string
+        notifications:
+          $ref: '#/components/schemas/NotificationsManager'
+        oauth_meta:
+          type: object
+          properties:
+            allowed_access_types:
+              type: array
+              items:
+                $ref: '#/components/schemas/AccessRequestType'
+            allowed_authorize_types:
+              type: array
+              items:
+                $ref: '#/components/schemas/AuthorizeRequestType'
+            auth_login_redirect:
+              type: string
+        openid_options:
+          $ref: '#/components/schemas/OpenIDOptions'
+        org_id:
+          type: string
+        pinned_public_keys:
+          type: object
+          additionalProperties:
+            type: string
+        proxy:
+          type: object
+          properties:
+            check_host_against_uptime_tests:
+              type: boolean
+            enable_load_balancing:
+              type: boolean
+            listen_path:
+              type: string
+            preserve_host_header:
+              type: boolean
+            service_discovery:
+              $ref: '#/components/schemas/ServiceDiscoveryConfiguration'
+            strip_listen_path:
+              type: boolean
+            target_list:
+              type: array
+              items:
+                type: string
+            target_url:
+              type: string
+            transport:
+              type: object
+              properties:
+                proxy_url:
+                  type: string
+                ssl_ciphers:
+                  type: array
+                  items:
+                    type: string
+                ssl_min_version:
+                  type: integer
+                  format: uint16
+        response_processors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseProcessor'
+        session_lifetime:
+          type: integer
+          format: int64
+        session_provider:
+          $ref: '#/components/schemas/SessionProviderMeta'
+        slug:
+          type: string
+        strip_auth_data:
+          type: boolean
+        tag_headers:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        upstream_certificates:
+          type: object
+          additionalProperties:
+            type: string
+        uptime_tests:
+          type: object
+          properties:
+            check_list:
+              type: array
+              items:
+                $ref: '#/components/schemas/HostCheckObject'
+            config:
+              type: object
+              properties:
+                expire_utime_after:
+                  type: integer
+                  format: int64
+                recheck_wait:
+                  type: integer
+                  format: int64
+                service_discovery:
+                  $ref: '#/components/schemas/ServiceDiscoveryConfiguration'
+        use_basic_auth:
+          type: boolean
+        use_keyless:
+          type: boolean
+        use_mutual_tls_auth:
+          type: boolean
+        use_oauth2:
+          type: boolean
+        use_openid:
+          type: boolean
+        use_standard_auth:
+          type: boolean
+        version_data:
+          type: object
+          properties:
+            default_version:
+              type: string
+            not_versioned:
+              type: boolean
+            versions:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/VersionInfo'
+    AccessDefinition:
+      description: AccessDefinition defines which versions of an API a key has access to
+      type: object
+      properties:
+        allowed_urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccessSpec'
+        api_id:
+          type: string
+        api_name:
+          type: string
+        versions:
+          type: array
+          items:
+            type: string
+    AccessRequestType:
+      description: AccessRequestType is the type for OAuth param `grant_type`
+      type: string
+    AccessSpec:
+      description: >-
+        AccessSpecs define what URLS a user has access to an what methods are
+        enabled
+      type: object
+      properties:
+        methods:
+          type: array
+          items:
+            type: string
+        url:
+          type: string
+    Auth:
+      type: object
+      properties:
+        auth_header_name:
+          type: string
+        cookie_name:
+          type: string
+        param_name:
+          type: string
+        use_certificate:
+          type: boolean
+        use_cookie:
+          type: boolean
+        use_param:
+          type: boolean
+    AuthProviderCode:
+      type: string
+    AuthProviderMeta:
+      type: object
+      properties:
+        meta:
+          type: object
+          additionalProperties:
+            type: object
+        name:
+          $ref: '#/components/schemas/AuthProviderCode'
+        storage_engine:
+          $ref: '#/components/schemas/StorageEngineCode'
+    AuthTypeEnum:
+      type: string
+    AuthorizeRequestType:
+      description: AuthorizeRequestType is the type for OAuth param `response_type`
+      type: string
+    BundleManifest:
+      type: object
+      properties:
+        checksum:
+          type: string
+        custom_middleware:
+          $ref: '#/components/schemas/MiddlewareSection'
+        file_list:
+          type: array
+          items:
+            type: string
+        signature:
+          type: string
+    CacheOptions:
+      type: object
+      properties:
+        cache_all_safe_requests:
+          type: boolean
+        cache_control_ttl_header:
+          type: string
+        cache_response_codes:
+          type: array
+          items:
+            type: integer
+            format: int64
+        cache_timeout:
+          type: integer
+          format: int64
+        enable_cache:
+          type: boolean
+        enable_upstream_cache_control:
+          type: boolean
+    CircuitBreakerMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        return_to_service_after:
+          type: integer
+          format: int64
+        samples:
+          type: integer
+          format: int64
+        threshold_percent:
+          type: number
+          format: double
+    EndPointMeta:
+      type: object
+      properties:
+        method_actions:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/EndpointMethodMeta'
+        path:
+          type: string
+    EndpointMethodAction:
+      type: string
+    EndpointMethodMeta:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/EndpointMethodAction'
+        code:
+          type: integer
+          format: int64
+        data:
+          type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+    EventHandlerMetaConfig:
+      type: object
+    EventHandlerTriggerConfig:
+      type: object
+      properties:
+        handler_meta:
+          type: object
+          additionalProperties:
+            type: object
+        handler_name:
+          $ref: '#/components/schemas/TykEventHandlerName'
+    ExtendedPathsSet:
+      type: object
+      properties:
+        black_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndPointMeta'
+        cache:
+          type: array
+          items:
+            type: string
+        circuit_breakers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CircuitBreakerMeta'
+        do_not_track_endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackEndpointMeta'
+        hard_timeouts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HardTimeoutMeta'
+        ignored:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndPointMeta'
+        method_transforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/MethodTransformMeta'
+        size_limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestSizeMeta'
+        track_endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackEndpointMeta'
+        transform:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateMeta'
+        transform_headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeaderInjectionMeta'
+        transform_jq:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransformJQMeta'
+        transform_jq_response:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransformJQMeta'
+        transform_response:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateMeta'
+        transform_response_headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/HeaderInjectionMeta'
+        url_rewrites:
+          type: array
+          items:
+            $ref: '#/components/schemas/URLRewriteMeta'
+        validate_json:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidatePathMeta'
+        virtual:
+          type: array
+          items:
+            $ref: '#/components/schemas/VirtualMeta'
+        white_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndPointMeta'
+    GlobalRateLimit:
+      type: object
+      properties:
+        per:
+          type: number
+          format: double
+        rate:
+          type: number
+          format: double
+    HardTimeoutMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        timeout:
+          type: integer
+          format: int64
+    HashType:
+      type: string
+    HeaderInjectionMeta:
+      type: object
+      properties:
+        act_on:
+          type: boolean
+        add_headers:
+          type: object
+          additionalProperties:
+            type: string
+        delete_headers:
+          type: array
+          items:
+            type: string
+        method:
+          type: string
+        path:
+          type: string
+    HostCheckObject:
+      type: object
+      properties:
+        body:
+          type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+        method:
+          type: string
+        url:
+          type: string
+    IdExtractorSource:
+      type: string
+    IdExtractorType:
+      type: string
+    MethodTransformMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        to_method:
+          type: string
+    MiddlewareDefinition:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+        require_session:
+          type: boolean
+    MiddlewareDriver:
+      type: string
+    MiddlewareIdExtractor:
+      type: object
+      properties:
+        extract_from:
+          $ref: '#/components/schemas/IdExtractorSource'
+        extract_with:
+          $ref: '#/components/schemas/IdExtractorType'
+        extractor_config:
+          type: object
+          additionalProperties:
+            type: object
+    MiddlewareSection:
+      type: object
+      properties:
+        auth_check:
+          $ref: '#/components/schemas/MiddlewareDefinition'
+        driver:
+          $ref: '#/components/schemas/MiddlewareDriver'
+        id_extractor:
+          $ref: '#/components/schemas/MiddlewareIdExtractor'
+        post:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiddlewareDefinition'
+        post_key_auth:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiddlewareDefinition'
+        pre:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiddlewareDefinition'
+        response:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiddlewareDefinition'
+    NewClientRequest:
+      description: >-
+        NewClientRequest is an outward facing JSON object translated from osin
+        OAuthClients
+      type: object
+      properties:
+        api_id:
+          type: string
+        client_id:
+          type: string
+        policy_id:
+          type: string
+        redirect_uri:
+          type: string
+        secret:
+          type: string
+    NotificationsManager:
+      description: 'TODO: Make this more generic'
+      type: object
+      title: >-
+        NotificationsManager handles sending notifications to OAuth endpoints to
+        notify the provider of key changes.
+      properties:
+        oauth_on_keychange_url:
+          type: string
+        shared_secret:
+          type: string
+    OIDProviderConfig:
+      type: object
+      properties:
+        client_ids:
+          type: object
+          additionalProperties:
+            type: string
+        issuer:
+          type: string
+    ObjectId:
+      description: 'http://www.mongodb.org/display/DOCS/Object+IDs'
+      type: string
+      title: >-
+        ObjectId is a unique ID identifying a BSON value. It must be exactly 12
+        bytes
+
+        long. MongoDB objects by default have such a property set in their "_id"
+
+        property.
+    OpenIDOptions:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/OIDProviderConfig'
+        segregate_by_client:
+          type: boolean
+    PolicyUpdateObj:
+      type: object
+      properties:
+        policy:
+          type: string
+    Regexp:
+      description: Regexp is a wrapper around regexp.Regexp but with caching
+      type: object
+      properties:
+        FromCache:
+          type: boolean
+    RequestInputType:
+      type: string
+    RequestSizeMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        size_limit:
+          type: integer
+          format: int64
+    ResponseProcessor:
+      type: object
+      properties:
+        name:
+          type: string
+        options:
+          type: object
+    RoutingTrigger:
+      type: object
+      properties:
+        'on':
+          $ref: '#/components/schemas/RoutingTriggerOnType'
+        options:
+          $ref: '#/components/schemas/RoutingTriggerOptions'
+        rewrite_to:
+          type: string
+    RoutingTriggerOnType:
+      type: string
+    RoutingTriggerOptions:
+      type: object
+      properties:
+        header_matches:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/StringRegexMap'
+        path_part_matches:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/StringRegexMap'
+        payload_matches:
+          $ref: '#/components/schemas/StringRegexMap'
+        query_val_matches:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/StringRegexMap'
+        session_meta_matches:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/StringRegexMap'
+    ServiceDiscoveryConfiguration:
+      type: object
+      properties:
+        cache_timeout:
+          type: integer
+          format: int64
+        data_path:
+          type: string
+        endpoint_returns_list:
+          type: boolean
+        parent_data_path:
+          type: string
+        port_data_path:
+          type: string
+        query_endpoint:
+          type: string
+        target_path:
+          type: string
+        use_discovery_service:
+          type: boolean
+        use_nested_query:
+          type: boolean
+        use_target_list:
+          type: boolean
+    SessionProviderCode:
+      type: string
+    SessionProviderMeta:
+      type: object
+      properties:
+        meta:
+          type: object
+          additionalProperties:
+            type: object
+        name:
+          $ref: '#/components/schemas/SessionProviderCode'
+        storage_engine:
+          $ref: '#/components/schemas/StorageEngineCode'
+    SessionState:
+      description: >-
+        There's a data structure that's based on this and it's used for Protocol
+        Buffer support, make sure to update
+        "coprocess/proto/coprocess_session_state.proto" and generate the
+        bindings using: cd coprocess/proto && ./update_bindings.sh
+      type: object
+      title: >-
+        SessionState objects represent a current API session, mainly used for
+        rate limiting.
+      properties:
+        access_rights:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AccessDefinition'
+        alias:
+          type: string
+        allowance:
+          type: number
+          format: double
+        apply_policies:
+          type: array
+          items:
+            type: string
+        apply_policy_id:
+          type: string
+        basic_auth_data:
+          type: object
+          properties:
+            hash_type:
+              $ref: '#/components/schemas/HashType'
+            password:
+              type: string
+        certificate:
+          type: string
+        data_expires:
+          type: integer
+          format: int64
+        enable_detail_recording:
+          type: boolean
+        expires:
+          type: integer
+          format: int64
+        hmac_enabled:
+          type: boolean
+        hmac_string:
+          type: string
+        id_extractor_deadline:
+          type: integer
+          format: int64
+        is_inactive:
+          type: boolean
+        jwt_data:
+          type: object
+          properties:
+            secret:
+              type: string
+        last_check:
+          type: integer
+          format: int64
+        last_updated:
+          type: string
+        meta_data:
+          type: object
+          additionalProperties:
+            type: object
+        monitor:
+          type: object
+          properties:
+            trigger_limits:
+              type: array
+              items:
+                type: number
+                format: double
+        oauth_client_id:
+          type: string
+        oauth_keys:
+          type: object
+          additionalProperties:
+            type: string
+        org_id:
+          type: string
+        per:
+          type: number
+          format: double
+        quota_max:
+          type: integer
+          format: int64
+        quota_remaining:
+          type: integer
+          format: int64
+        quota_renewal_rate:
+          type: integer
+          format: int64
+        quota_renews:
+          type: integer
+          format: int64
+        rate:
+          type: number
+          format: double
+        session_lifetime:
+          type: integer
+          format: int64
+        tags:
+          type: array
+          items:
+            type: string
+    StorageEngineCode:
+      type: string
+    StringRegexMap:
+      type: object
+      properties:
+        match_rx:
+          type: string
+    TemplateData:
+      type: object
+      properties:
+        enable_session:
+          type: boolean
+        input_type:
+          $ref: '#/components/schemas/RequestInputType'
+        template_mode:
+          $ref: '#/components/schemas/TemplateMode'
+        template_source:
+          type: string
+    TemplateMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+        template_data:
+          $ref: '#/components/schemas/TemplateData'
+    TemplateMode:
+      type: string
+    TrackEndpointMeta:
+      type: object
+      properties:
+        method:
+          type: string
+        path:
+          type: string
+    TransformJQMeta:
+      type: object
+      properties:
+        filter:
+          type: string
+        method:
+          type: string
+        path:
+          type: string
+    TykEvent:
+      type: string
+    TykEventHandlerName:
+      type: string
+    URLRewriteMeta:
+      type: object
+      properties:
+        MatchRegexp:
+          $ref: '#/components/schemas/Regexp'
+        match_pattern:
+          type: string
+        method:
+          type: string
+        path:
+          type: string
+        rewrite_to:
+          type: string
+        triggers:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoutingTrigger'
+    ValidatePathMeta:
+      type: object
+      properties:
+        error_response_code:
+          description: >-
+            Allows override of default 422 Unprocessible Entity response code
+            for validation errors.
+          type: integer
+          format: int64
+        method:
+          type: string
+        path:
+          type: string
+        schema:
+          type: object
+          additionalProperties:
+            type: object
+        schema_b64:
+          type: string
+    VersionInfo:
+      type: object
+      properties:
+        expires:
+          type: string
+        extended_paths:
+          $ref: '#/components/schemas/ExtendedPathsSet'
+        global_headers:
+          type: object
+          additionalProperties:
+            type: string
+        global_headers_remove:
+          type: array
+          items:
+            type: string
+        global_size_limit:
+          type: integer
+          format: int64
+        name:
+          type: string
+        override_target:
+          type: string
+        paths:
+          type: object
+          properties:
+            black_list:
+              type: array
+              items:
+                type: string
+            ignored:
+              type: array
+              items:
+                type: string
+            white_list:
+              type: array
+              items:
+                type: string
+        use_extended_paths:
+          type: boolean
+    VirtualMeta:
+      type: object
+      properties:
+        function_source_type:
+          type: string
+        function_source_uri:
+          type: string
+        method:
+          type: string
+        path:
+          type: string
+        response_function_name:
+          type: string
+        use_session:
+          type: boolean
+    apiAllKeys:
+      description: apiAllKeys represents a list of keys in the memory store
+      type: object
+      properties:
+        keys:
+          type: array
+          items:
+            type: string
+    apiModifyKeySuccess:
+      description: apiModifyKeySuccess represents when a Key modification was successful
+      type: object
+      properties:
+        action:
+          type: string
+        key:
+          type: string
+        key_hash:
+          type: string
+        status:
+          type: string
+    apiStatusMessage:
+      description: apiStatusMessage represents an API status message
+      type: object
+      properties:
+        message:
+          description: Response details
+          type: string
+        status:
+          description: Status can be either `ok` or `error`
+          type: string
