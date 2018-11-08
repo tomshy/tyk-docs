@@ -6,6 +6,7 @@ menu:
     parent: "Tyk Rest API"
 weight: 4 
 ---
+Keys allow you to control access to your API. You can control Usage Quotas, Rate Limiting and which APIs a Key is applied to. You can also add Authentication to a Key. This section describes how to create and manage your Keys.
 
 ### Create Keys
 
