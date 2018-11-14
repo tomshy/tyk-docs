@@ -25,9 +25,9 @@ To get email set up for your installation, add the following to your `tyk_analyt
 ```{.copyWrapper}
 "email_backend": {
   "enable_email_notifications": true,
-  "code": "provider-name",
+  "code": "{PROVIDER-NAME}",
   "settings": {
-    // Client specific settings go here.
+    // Client provider specific settings go here. You can find the specific field described below 
   },
   "default_from_email": "jeff@wheresmyrug.com",
   "default_from_name": "Jeffrey (The Dude) Lebowski"
@@ -38,7 +38,7 @@ To get email set up for your installation, add the following to your `tyk_analyt
 
 > Available from Tyk Dashboard version 1.7
 
-```{.copyWrapper}
+```{.json}
 "code": "smtp",
 "settings": {
   "SMTPUsername": "email@example.com",
@@ -49,7 +49,7 @@ To get email set up for your installation, add the following to your `tyk_analyt
 
 #### Mandrill
 
-```{.copyWrapper}
+```{.json}
 "code": "mandrill",
 "settings": {
   "ClientKey": "xxxxxxxxx"
@@ -58,7 +58,7 @@ To get email set up for your installation, add the following to your `tyk_analyt
 
 #### Sendgrid
 
-```{.copyWrapper}
+```{.json}
 "code": "sendgrid",
 "settings": {
   "ClientKey": "xxxxxxxxx"
@@ -67,7 +67,7 @@ To get email set up for your installation, add the following to your `tyk_analyt
 
 #### Mailgun
 
-```{.copyWrapper}
+```{.json}
 "code": "mailgun",
 "settings": {
   "Domain": "KEY",
@@ -78,7 +78,7 @@ To get email set up for your installation, add the following to your `tyk_analyt
 
 #### Amazon SES
 
-```{.copyWrapper}
+```{.json}
 "code": "amazonses",
 "settings": {
   "Endpoint": "Endpoint",
