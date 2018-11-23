@@ -50,10 +50,10 @@ Set the data expires to a time in seconds for it to expire. Tyk will calculate t
 
 ```{.copyWrapper}
 "enforce_org_data_age": true, 
-"enforce_org_quota": false
+"enforce_org_quotas": false
 ```
 
-> **Note**: This will only work for v2.2.0.23 or above, if you are running an earlier patch, you will need to `enforce_org_quota` set to `true`.
+> **Note**: This will only work for v2.2.0.23 or above, if you are running an earlier patch, you will need to `enforce_org_quotas` set to `true`.
 
 ## <a name="size-based-cap"></a> Size Based Cap
 
