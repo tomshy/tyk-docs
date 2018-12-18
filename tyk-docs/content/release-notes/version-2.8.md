@@ -42,7 +42,7 @@ You can now have the same Portal experience for your open APIs. All the function
 
 # Dynamic Portal Customisation
 
-Portal templates now have access to the Developer object, it's subscriptions, and issued key meta-data, providing the ability to conditionally show or hide content inside the Portal based on attributes mentioned below.
+Portal templates now have access to the Developer object, its subscriptions, and issued key meta-data, providing the ability to conditionally show or hide content inside the Portal based on attributes mentioned below.
 
 The Current logged in Developer can be accessed using `.Profile` variable with the following fields:
 * Id - Internal developer ID
