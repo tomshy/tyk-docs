@@ -24,7 +24,7 @@ Another example will be conditionally processing SOAP requests based on content 
 
 # Debugger
 
-Now you can safely test all API changes, without publishing them, and visually see the whole request flow, including which plugins are running and event their individual logs.
+Now you can safely test all API changes, without publishing them, and visually see the whole request flow, including which plugins are running and even their individual logs.
 
 We have added a new API designer tab called `Debugging`,  which provides a `postman` like interface to simulate HTTP queries for the current API definition being edited. 
 
