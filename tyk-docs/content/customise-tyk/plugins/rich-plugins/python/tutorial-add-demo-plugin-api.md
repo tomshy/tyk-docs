@@ -1,6 +1,6 @@
 ---
 date: 2017-03-24T13:17:31Z
-title: Tutorial Add a demo plugin to your API with Python
+title: Tutorial Add a python plugin bundle to your gateway
 menu:
   main:
     parent: "Python"
@@ -68,11 +68,11 @@ To enable Python plugins you need to add the following block to `tyk.conf`:
 
 `enable_bundle_downloader`: enables the bundle downloader.
 
-`bundle_base_url`: is a base URL that will be used to download the bundle, in this example we have "test-bundle" specified in the API settings, Tyk will fetch the URL for your specified bundle server (in the above example): "dummy-bundle-server.com/bundles/test-bundle". You need to create and then specify your own bundle server URL.
+`bundle_base_url`: is a base URL that will be used to download the bundle, in this example we have `test-bundle` specified in the API settings, Tyk will fetch the URL for your specified bundle server (in the above example): `dummy-bundle-server.com/bundles/test-bundle`. You need to create and then specify your own bundle server URL.
 
-`public_key_path`: sets a public key, this is used for verifying signed bundles, you may omit this if unsigned bundles are used.
+`public_key_path`: sets a public key, this is used for verifying signed bundles, you may omit this if unsigned bundles are used. 
 
-## <a name="run-python-plugin"></a> Running the Tyk Python build
+## <a name="run-python-gateway"></a> Running the Tyk Python Gateway build
 
 To use Tyk with Python support you will need to use an alternative binary, it is provided in the standard Tyk package but it has a different service name.
 
