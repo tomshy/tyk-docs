@@ -90,6 +90,8 @@ In the above example, the `port_data_path` would be `port`.
 
 * `proxy.service_discovery.cache_timeout`: Tyk caches target data from a discovery service. In order to make this dynamic you can set a cache value when the data expires and new data is loaded.
 
+* `proxy.disable_strip_prefix`: This boolean option allows you to disable automatic 302 redirects from the upstream root.
+
 
 
 ***Internal proxy setup***

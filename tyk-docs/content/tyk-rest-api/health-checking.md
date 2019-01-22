@@ -21,6 +21,10 @@ HTTP/1.1 200 OK
 Hello Tiki
 ```
 
+### Rename the /hello Endpoint
+
+From v2.7.5 you can now rename the `/hello`  endpoint by using the `health_check_endpoint_name` option
+
 ### Check the Health of a Tyk Node and Upstream API
 
 > **Note**: As of v2.4, the health-check API has been deprecated. We no longer recommend its use.

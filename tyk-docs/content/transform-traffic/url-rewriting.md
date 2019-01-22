@@ -132,6 +132,7 @@ The Trigger functionality supports:
 * Path part matches, i.e. components of the path itself - `path_part_matches`
 * Session meta data values — `session_meta_matches`
 * Payload matches — `payload_matches`
+* Matching by request, by IP Address or JWT scope - `request_context_matches`
 
 All of the triggers above, except `payload_matches`, have the same structure, shown in the example above. `payload_matches` requires defining only with regexp like this: `"payload_matches": { "match_rx": "regexp" }`.
 

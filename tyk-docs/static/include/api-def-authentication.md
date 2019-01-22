@@ -17,6 +17,8 @@ This method will use a session key to identify a user and a user secret that sho
 This method will also introduce clock skew checks, requests outside of 300ms of the system time will be rejected.  
 This method is not recommended for Single-Page-Webapps (SPA) or Mobile apps due to the fact that secrets need to be distributed.
 
+*   `hmac_allowed_algorithms`: From v2.7.5, Tyk supports the following HMAC algorithms: “hmac-sha1", "hmac-sha256", "hmac-sha384", "hmac-sha512”. You can limit which ones you want to support with this option. For example, [“hmac-sha256”]
+
 *   `hmac_allowed_clock_skew`: Set this value to anything larger than `0` to set the amount of milliseconds that will be tolerated for clock skew. Set to 0 to prevent clock skew checks on requests (only in HMAC mode).
 
 *   `use_oauth2`: Tyk attempts to implement a semi-seamless OAuth2 flow. Given the nature of OAuth2's three-party system, it is difficult to implement as a proxy without significantly compromising security or usability.  
