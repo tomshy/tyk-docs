@@ -221,6 +221,10 @@ This section enables the configuration of the health-check API endpoint and the 
 
 Setting this value to `true` will enable the health-check endpoint on `/Tyk/health`.
 
+#### <a name="health_check_endpoint_name"></a>health_check_endpoint_name
+
+From v2.7.5 you can now rename the `/hello`  endpoint by using this option. 
+
 #### <a name="health_check-health_check_value_timeouts"></a> health_check.health_check_value_timeouts
 
 This setting defaults to `60`, this is the time window that Tyk will use to sample health-check data. Increase this value for more accurate data (larger sample period), and decrease for less accurate. The reason this value is configurable is because sample data takes up space in your Redis DB to store the data to calculate samples, on high-availability systems this may not be desirable and smaller values may be preferred.
@@ -276,7 +280,7 @@ Set this to the number of seconds that Tyk should use to flush content from the 
 
 For more resilient connection management, it is suggested to use the `close_connections` option below.
 
-As of v2.2, `flush_interval` is in *milliseconds*.
+`flush_interval` is set in **milliseconds**.
 
 #### <a name="http_server_options-enable_websockets"></a> http_server_options.enable_websockets
 
