@@ -82,3 +82,6 @@ The Domain in this case will be extracted from standard certificate fields: `Sub
 
 > **Note**: this approach only works with the Tyk Gateway at present. Dashboard support has not been implemented yet.
 
+### Dynamically setting SSL certificates for custom domains
+
+If you include certificateID or certificate path to API definition `certificates` field, Gateway will dynamically load this ceritficate for your custom domain, so you will not need to restart the process. You can do it from Dashboard UI too, in custom domain section.
