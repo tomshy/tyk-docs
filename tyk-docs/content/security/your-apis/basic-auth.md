@@ -1,21 +1,21 @@
 ---
 date: 2017-03-23T15:28:35Z
-title: Basic Auth
+title: Basic Auththentication
 menu:
   main:
     parent: "Your APIs"
 weight: 5 
 ---
 
-## <a name="what-is-basic-auth"></a>What is Basic Auth ?
+## <a name="what-is-basic-auth"></a>What is Basic Authentication?
 
 > In the context of an HTTP transaction, basic access authentication is a method for an HTTP user agent to provide a user name and password when making a request. HTTP Basic authentication (BA) implementation is the simplest technique for enforcing access controls to web resources because it doesn’t require cookies, session identifiers, or login pages; rather, HTTP Basic authentication uses standard fields in the HTTP header, obviating the need for handshakes. (Source: wikipedia)
 
-Basic Authentication is a standard authentication mechanism supported by every standards-compliant http server, it is also supported by almost every single web browser, which makes it an excellent access control method for smaller APIs.
+Basic Authentication is a standard authentication mechanism supported by every standards-compliant HTTP server, it is also supported by almost every single web browser, which makes it an excellent access control method for smaller APIs.
 
-However, a serious drawback of Basic Authentication is that credentials are transferred in encoded plaintext over the wire, this can be a serious concern for API owners and should therefore only ever be used in conjunction with TLS such as SSL.
+However, a serious drawback of Basic Authentication is that credentials are transferred in encoded plain text over the wire, this can be a serious concern for API owners and should therefore only ever be used in conjunction with TLS such as SSL.
 
-A basic auth request will have an Authorization header where the value will be of the form:
+A basic authentication request will have an Authorization header where the value will be in the form of:
 
 ```
 Basic base64Encode(username:password)
@@ -34,9 +34,9 @@ In the above example the username is `john@smith.com` and the password is `12345
 
 Tyk supports using basic authentication as an access key in the same way as any other access method.
 
-## <a name="with-dashboard"></a>Enable Basic Auth in your API Definition with the Dashboard
+## <a name="with-dashboard"></a>Enable Basic Authentication in your API Definition with the Dashboard
 
-To enable Basic Auth on your API using the dashboard GUI:
+To enable Basic Authentication on your API using the Tyk Dashboard:
 
 1. Select your API from the **System Management > APIs** menu
 2. Scroll to the **Authentication** options
@@ -45,9 +45,9 @@ To enable Basic Auth on your API using the dashboard GUI:
 
 ![Target Details: Basic Auth][1]
 
-## <a name="with-file-based"></a>Enable Basic Auth in your API Definition with file-based
+## <a name="with-file-based"></a>Enable Basic Authentication in your API Definition with file-based
 
-To enable Basic Auth, the API Definition file needs to be set up to allow basic auth and not a standard access token:
+To enable Basic Authentication, the API Definition file needs to be set up to allow basic authentication and not a standard access token:
 
 ```{.copyWrapper}
 {
@@ -58,11 +58,17 @@ To enable Basic Auth, the API Definition file needs to be set up to allow basic 
 }
 ```
 
-As you can see in the above example, enabling basic auth is as simple as setting a flag for the feature in your API Definition object. Since BA is a standard, Tyk will always look for the credentials as part of the Authorization header.
+As you can see in the above example, enabling basic authentication is as simple as setting a flag for the feature in your API Definition object. Since BA is a standard, Tyk will always look for the credentials as part of the Authorization header.
 
-## <a name="create-a-basic-auth-user"></a>Create a Basic Auth User
+## <a name="create-basic-auth-key"></a>Create a Key with Basic Authentication
 
-For a user session object, to enable basic auth, set the relevant fields in the session object:
+We have tutorials for [creating an API Key](/docs/get-started/with-tyk-on-premise/tutorials/tyk-on-premises-pro/create-api-token/) via the Dashboard. To use with Basic Authentication, select the **Basic Authentication** option.
+
+![Keys Basic Auth][2]
+
+## <a name="create-a-basic-auth-user"></a>Create a Basic Authentication User
+
+For a user session object, to enable basic authentication set the relevant fields in the session object:
 
 ```{.copyWrapper}
 {
@@ -75,13 +81,13 @@ For a user session object, to enable basic auth, set the relevant fields in the 
 ```
 
 
-Notice the `basic_auth_data` section - this is all that is really required, if an API is basic auth enabled, any keys that are retrieved will check this field for a password and compare it to the password encoded in the request. The password will be encrypted by default using bcrypt to ensure it is secure.
+Notice the `basic_auth_data` section - this is all that is really required.If an API is basic authentication enabled, any keys that are retrieved will check this field for a password and compare it to the password encoded in the request. The password will be encrypted by default using bcrypt to ensure it is secure.
 
-> **Note**: Basic authentication keys are not created the same way as other keys, since the key ID is not generated by the system a basic auth key cannot use the `/tyk/keys/create` endpoint, and instead should `POST` to `/tyk/keys/{username}` of the Tyk Gateway API, this will *ADD* a key to the system. Subsequent requests will overwrite this entry, sending a `PUT` request will update the entry.
+> **Note**: Basic authentication keys are not created the same way as other keys. Since the key ID is not generated by the system a basic authentication key cannot use the `/tyk/keys/create` endpoint, and instead should `POST` to `/tyk/keys/{username}` of the Tyk Gateway API. This will *ADD* a key to the system. Subsequent requests will overwrite this entry, sending a `PUT` request will update the entry.
 
-### Create user using Gateway API
+### Create a Basic Authentication User using the Gateway API
 
-The below command will use the gateway API to generate a new basic auth user in Tyk Gateway:
+The below command will use the Tyk Gateway API to create a new basic authentication user in the Tyk Gateway:
 
 ```{.copyWrapper}
 curl -X POST -H "x-tyk-authorization: 352d20fe67be67f6340b4c0605b044c3" \
@@ -112,9 +118,9 @@ curl -X POST -H "x-tyk-authorization: 352d20fe67be67f6340b4c0605b044c3" \
  }' http://{your-tyk-gateway-host}:{port}/tyk/keys/testuser | python -mjson.tool
 ```
 
-### Create user using Dashboard API
+### Create a Basic Authentication User using the Dashboard API
 
-The following command will create a basic auth user with the dashboard API:
+The following command will create a basic authentication  user with the Tyk Dashboard API:
 
 ```{.copyWrapper}
 curl -X POST -H "Authorization: {YOUR API KEY}"
@@ -151,6 +157,7 @@ curl -X POST -H "Authorization: {YOUR API KEY}"
 
 
 [1]: /docs/img/dashboard/system-management/basic_auth_2.5.png
+[2]: /docs/img/dashboard/system-management/keys_basic_auth.png
 
 
 
