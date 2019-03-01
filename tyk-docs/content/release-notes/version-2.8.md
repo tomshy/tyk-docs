@@ -68,11 +68,11 @@ The Current logged in Developer detailed subscription object can be accessed usi
 
 You have different teams of developers, and for each team we want to show them a different list of APIs. In this case, for each developer, we need to set a custom  `team` field, and assert it in a template like this:
 ```
-{{if .Profile.Fields.Team == `internal`}}
-… Display internal APIs …
+{{if eq .Profile.Fields.Team `internal`}}
+    … Display internal APIs …
 {{end}}
-{{if .Profile.Fields.Team == `public`}}
-… Display public set of APIs …
+{{if eq .Profile.Fields.Team `public`}}
+    … Display public set of APIs …
 {{end}}
 ```
 
