@@ -116,23 +116,11 @@ Set the number of maximum idle connections in the Redis connection pool, default
 
 Enable SSL/TLS connection between Tyk Gateway &amp; Redis.
 
-### <a name="maxmind"></a>MaxMind Database Settings
-
-#### <a name="enable_geo_ip"></a> enable_geo_ip
-
-Set this to `true` to allow you to use MaxMind GeoIP databases. You also need to set `geo_ip_db_path`.
-
-You can also enable storing GeoIP information in analytics by setting the following Gateway option: [`enable_analytics.enable_geo_ip`](https://tyk.io/docs/configure/tyk-gateway-configuration-options/#a-name-enable-analytics-enable-geo-ip-a-enable-analytics-enable-geo-ip)
-
-#### <a name="geo_ip_db_path"></a> geo_ip_db_path
-
-Set this value to the absolute path of your MaxMind GeoIP Database file, e.g.: `./GeoLite2-City.mmdb`. 
-
 #### <a name="enable_analytics"></a> enable_analytics
 
 Tyk is capable of recording every hit to your API into a database with various filtering parameters, set this value to `true` and fill in the sub-section below to enable logging.
 
-> **Note**: Tyk will store traffic data to Redis initially (for performance reasons) and then purge the data from Redis into MongoDB/CSV on a regular basis as determined by the `purge_delay` setting in your Tyk Pump configuration.
+> **Note**: For performance reasons, Tyk will store traffic data to Redis initially and then purge the data from Redis to  MongoDB or other, [data stores](https://tyk.io/docs/analyse/other-data-stores/), on a regular basis as determined by the `purge_delay` setting in your Tyk Pump configuration.
 
 ### <a name="analytics_config"></a> analytics_config
 
@@ -144,13 +132,19 @@ Set this value to `true` to have Tyk store the inbound request and outbound resp
 
 Setting `enforce_org_data_detail_logging` in the `tyk.conf` will enforce it (quotas must also be enforced for this to work), then setting `enable_detail_recording` in the org session object will enable or disable the logging method on a per-organisation basis. This can be useful for debugging live APIs.
 
-#### <a name="analytics_config-enable_geo_ip"></a> analytics_config.enable_geo_ip
+#### <a name="analytics_config-enable_geo_ip-enable_geo_ip_db_path"></a> analytics_config.enable_geo_ip and analytics_config.geo_ip_db_path
+
+##### <a name="enable_geo_ip"></a> enable_geo_ip
 
 As of Tyk API Gateway 2.0, Tyk can store GeoIP information based on MaxMind DB's, to enable GeoIP tracking on inbound request analytics, set this value to `true` and assign a DB using the `geo_ip_db_path` setting.
 
-#### <a name="analytics_config-enable_geo_ip_db_path"></a> analytics_config.enable_geo_ip_db_path
+Please make sure you have also enabled analytics storing by setting [`enable_analytics`](https://tyk.io/docs/configure/tyk-gateway-configuration-options/#a-name-enable-analytics-a-enable-analytics) in the Gateway.
 
-Set this value to the absolute path of your MaxMind GeoIP Database file, e.g.: `./GeoLite2-City.mmdb`. The analytics GeoIP DB can be replaced on disk, it will cleanly auto-reload every hour.
+##### <a name="enable_geo_ip_db_path"></a> geo_ip_db_path
+
+Set this value to the absolute path of your MaxMind GeoIP Database file, e.g.: `./GeoLite2-City.mmdb`. The analytics GeoIP DB can be replaced on disk, it will cleanly auto-reload every hour. 
+
+Don't forget to mount it in case you use containers.
 
 #### <a name="analytics_config-ignored_ips"></a> analytics_config.ignored_ips
 
