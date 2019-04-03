@@ -40,6 +40,8 @@ Next, we need to ensure that the policy loader and analytics pump use the RPC dr
 },
 ```
 
+NOTE: if you set `analytics_config.type` to `rpc` - make sure you don't have tyk-pump configured to send analytics via `hybrid` pump type.
+
 Lastly, we add the sections that enforce the RPC Slave mechanism:
 
 ```{.json}

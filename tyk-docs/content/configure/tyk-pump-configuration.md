@@ -137,6 +137,19 @@ Create a `pump.conf` file:
       }
     }
   },
+  "hybrid": {
+    "name": "hybrid",
+    "meta": {
+      "rpc_key": "abc",
+      "api_key": "xyz",
+      "connection_string": "localhost:9090",
+      "use_ssl": false,
+      "ssl_insecure_skip_verify": false,
+      "group_id": "",
+      "call_timeout": 30,
+      "rpc_pool_size": 30
+    }
+  },
   "uptime_pump_config": {
     "collection_name": "tyk_uptime_analytics",
     "mongo_url": "mongodb://username:password@{hostname:port},{hostname:port}/{db_name}"
@@ -172,6 +185,27 @@ Settings must be the same as for the original `tyk.conf` for Redis and for Mongo
 Moesif is a logging and analytics service for APIs. The Moesif pump will move analytics data from Tyk to Moesif.
 
 `application_id` - Moesif App Id JWT. Multiple api_id's will go under the same app id.
+
+#### Hybrid RPC Config
+Pump type `hybrid` is used to send your analytics data to MDCB via RPC.
+
+NOTE: Make sure your tyk.conf has `analytics_config.type` set to empty string value.
+
+`rpc_key` - Put your organization ID in this field.
+
+`api_key` - This the API key of a user used to authenticate and authorise the Gateway's access through MDCB. The user should be a standard Dashboard user with minimal privileges so as to reduce risk if compromised. The suggested security settings are `read` for `Real-time notifications` and the remaining options set to `deny`.
+
+`connection_string` - The MDCB instance or load balancer.
+
+`use_ssl` - Set this field to `true` if you need secured connection (default value is `false`).
+
+`ssl_insecure_skip_verify` - Set this field to `true` if you use self signed certificate.
+
+`group_id` - This is the "zone" that this instance inhabits, e.g. the DC it lives in. It must be unique to each slave cluster / DC.
+
+`call_timeout` - This is the timeout (in milliseconds) for RPC calls.
+
+`rpc_pool_size` - This is maximum number of connections to MDCB.
 
 ### Capping analytics data
 
