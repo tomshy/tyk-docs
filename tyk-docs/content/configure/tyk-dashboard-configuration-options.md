@@ -268,16 +268,17 @@ If you set this value to `true`, then the `id` parameter in a stored policy (or 
 
 *   `use_sharded_analytics`: If using the `mongo-pump-selective` pump, where data is written to org-id-specific collections in MongoDB, then enabling this option will switch querying for analytics over to the independent collection entries.
 
-*   `enable_aggregate_lookups`: As of v1.2, if using the new Aggregate Pump, Tyk Analytics can make use of the newer, faster Analytics lookup, to ensure that this can be made backwards compatible. This option must be set to `true`, in conjunction with the `aggregate_lookup_cutoff` value.
+*   `enable_aggregate_lookups`: If using the new Aggregate Pump, Tyk Analytics can make use of the newer, faster Analytics lookup, to ensure that this can be made backwards compatible. This option must be set to `true`, in conjunction with the `aggregate_lookup_cutoff` value.
 
-*   `aggregate_lookup_cutoff`: As of v1.2, set this to a date value of the form `DD/MM/YYYY`. Any analytics queries before this date will fall back to the raw base log data collection (slower). This is to ensure continuity of service and a smooth upgrade process with no loss of data.
+*   `aggregate_lookup_cutoff`: Set this to a date value of the form `DD/MM/YYYY`. Any analytics queries before this date will fall back to the raw base log data collection (slower). This is to ensure continuity of service and a smooth upgrade process with no loss of data.
 
-*   `disable_parallel_sessions`: As of v1.3.4, if set to `true`, it restricts an account to a single session. When an account logs in, any other open sessions for that account are logged out.
+*   `disable_parallel_sessions`: If set to `true`, it restricts an account to a single session. When an account logs in, any other open sessions for that account are logged out.
 
-*   `sso_permission_defaults`: As of v1.4, you can specify permissions of the user who logged in using Admin SSO API (for example Tyk Identity Broker). See [Dashboard Admin SSO API](https://tyk.io/docs/dashboard-admin-api/sso/) for more details.
-*   `sso_custom_login_url`: As of v1.4, you can specify a custom dashboard login url if you are using 3rd party authentication like TIB.
-*   `sso_custom_portal_login_url`: As of v1.4, you can specify custom portal login url if you are using 3rd party authentication like TIB.
+*   `sso_permission_defaults`: Specify permissions of the user who logged in using Admin SSO API (for example Tyk Identity Broker). See [Dashboard Admin SSO API](https://tyk.io/docs/dashboard-admin-api/sso/) for more details.
+*   `sso_custom_login_url`: Specify a custom dashboard login url if you are using 3rd party authentication like TIB.
+*   `sso_custom_portal_login_url`: Specify custom portal login url if you are using 3rd party authentication like TIB.
 
+*   `enable_multi_org_users`: As of 1.8, this enables the ability to share users across multiple organisations in a Tyk Dashboard Installation (Note: requires > 2 node licence). 
 
 ### Environment variables
 
