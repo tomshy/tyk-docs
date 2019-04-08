@@ -140,3 +140,10 @@ Tyk Dashboard 1.8.0
 
 Tyk Pump 0.6
 - Added `hybrid` pump, allowing Multi-Cloud users to use custom storage engines for analytics.
+
+# Request Throttling
+
+You can now enable automatic retrying the requests that fail due to rate limiting by setting two variables:
+
+1. `throttle_interval`: Interval(seconds) between each request retry.
+2. `throttle_retry_limit`: Total request retry number.
