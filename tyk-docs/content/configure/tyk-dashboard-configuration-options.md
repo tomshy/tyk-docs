@@ -284,8 +284,8 @@ If you set this value to `true`, then the `id` parameter in a stored policy (or 
 *   `disable_parallel_sessions`: If set to `true`, it restricts an account to a single session. When an account logs in, any other open sessions for that account are logged out.
 
 *   `sso_permission_defaults`: Specify permissions of the user who logged in using Admin SSO API (for example Tyk Identity Broker). See [Dashboard Admin SSO API](https://tyk.io/docs/dashboard-admin-api/sso/) for more details.
-*   `sso_custom_login_url`: Specify a custom dashboard login url if you are using 3rd party authentication like TIB.
-*   `sso_custom_portal_login_url`: Specify custom portal login url if you are using 3rd party authentication like TIB.
+*   `sso_custom_login_url`: Specify a custom dashboard login URL if you are using 3rd party authentication like TIB.
+*   `sso_custom_portal_login_url`: Specify custom portal login URL if you are using 3rd party authentication like TIB.
 
 *   `enable_multi_org_users`: As of 1.8, this enables the ability to share users across multiple organisations in a Tyk Dashboard Installation (Note: requires > 2 node licence). 
 
