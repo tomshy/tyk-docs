@@ -120,7 +120,7 @@ Now you can add additional pumps to the Tyk Pump config.
 
 ### Dashboard Audit Log improvements
 
-There is a new section in dashboard config file where you can specify parameters for audit log (contains audit records for all requests made to all endpoint under `/api` route).
+There is a new section in dashboard config file where you can specify parameters for audit log (contains audit records for all requests made to all endpoints under `/api` route).
 
 Config example:
 ```json
