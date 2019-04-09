@@ -118,6 +118,43 @@ In order to do that, you need to
 
 Now you can add additional pumps to the Tyk Pump config.
 
+### Dashboard Audit Log improvements
+
+There is a new section in dashboard config file where you can specify parameters for audit log (contains audit records for all requests made to all under `/api` route).
+
+Config example:
+```json
+  "audit": {
+    "enabled": true,
+    "format": "json",
+    "path": "/tmp/audit.log",
+    "detailed_recording": false
+  }
+```
+
+- `enabled` - enables audit logging, set to `false` by default. NOTE: setting value `security.audit_log_path` has the same effect as setting `enabled` to `true`
+- `format` - specifies the format of audit log file, possible values are `json` and `text` (`text` is default value)
+- `path` - specifies path to file with audit log, overwrites value `security.audit_log_path` if it was set
+- `detailed_recording` - enables detailed records in audit log, by default set to `false`. If set to `true` then audit log records will contain http-request (without body) and full http-response including body`
+
+Audit record fields for `json` format:
+
+ *   `req_id` - unique request ID
+ *   `org_id` - organization ID
+ *   `date` - date in `RFC1123` format
+ *   `timestamp` - unix timestamp
+ *   `ip` - IP address the request was originating from
+ *   `user` - dashboard user who performed the request
+ *   `action` - description of action performed (`i.e. `Update User`)
+ *   `method` - HTTP-method of the request
+ *   `url` - URL of the request
+ *   `status` - HTTP response status of the request
+ *   `diff` - provides diff of changed fields (available only for PUT requests)
+ *   `request_dump` - HTTP request copy (available if `detailed_recording` is set to `true`)
+ *   `response_dump` - HTTP response copy (available if `detailed_recording` is set to `true`)
+ 
+ If you specidy `text` format - all fields are in plain text separated with new line and provided in the same order as fields for `json` format.
+
 ### Plugin bundler CLI tools now built-in to Tyk binary
 
 Previously you had to use a separate `tyk-cli` binary to build. 
@@ -137,6 +174,7 @@ Tyk Dashboard 1.8.0
 - Extended Portal templating functionality.
 - Similar to the Gateway, you now can whitelist a list of acceptable TLS ciphers using the `http_server_options.cipher_suites` array option.
 - Numerous UX and performance improvements
+- Audit log improvements
 
 Tyk Pump 0.6
 - Added `hybrid` pump, allowing Multi-Cloud users to use custom storage engines for analytics.
