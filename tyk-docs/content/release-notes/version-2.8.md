@@ -8,7 +8,7 @@ weight: 1
 
 # Looping
 
-You now can configure complex request pipelines, allowing you to specify different actions for the same path, depending on defined conditions. During URL rewrites, instead of rewriting to some HTTP endpoint, you now can tell Tyk to internally run its request pipeline one more time, but for another specified endpoint. In Tyk terms it called `looping` or adding a `loop`.  In order to specify a `loop`, in the target URL, you should specify string of the following format: `tyk://self/<path>`
+You now can configure complex request pipelines, allowing you to specify different actions for the same path, depending on defined conditions. During URL rewrites, instead of rewriting to some HTTP endpoint, you now can tell Tyk to internally run its request pipeline one more time, but for another specified endpoint. In Tyk terms it called `looping` or adding a `loop`.  In order to specify a `loop`, in the target URL, you should specify string of the following format: `tyk://self/<path>`. You can loop to another API as well, by specifying API name or id instead of `self`: `tyk://<api-id>/<path>`.
 
 Combined with advanced URL rewriter rules, it can be turned into a powerful logical block, replacing the need for writing middleware or virtual endpoints in a lot of cases.
 
@@ -35,6 +35,19 @@ You can even debug your virtual endpoints, by dynamically modifying the code, se
 If you set the `Limits and Quotas per API` flag while configuring policy,  you will be able to configure separate rate limits and quotas per API. 
 
 Note that you can’t mix this functionality with [partitioned policies](https://tyk.io/docs/security/security-policies/partitioned-policies/).
+
+# Multi-organization users
+
+Now you can create users with the same email in different organizations. Such users will be able to select organization during login, and easily switch between organizations using navigation menu. To enable set `enable_multi_org_users` to `true`
+
+# Request throttling
+
+In cases of hitting quota or rate limits, Gateway now can automatically queue and auto-retry client requests. Throttling configured on key or policy level via new fields: `throttle_interval` and `trottle_retry_limit`. 
+
+# Password policy improvements
+* `security.user_password_max_days` Set the maximum lifetime of a password for a user. They will be prompted to reset if password lifetime exceeds the configured expiry value. e.g. if value set to `30` any user password set over 30 days in past will be considered invalid and must be reset.
+* `security.enforce_password_history` Set a maximum number of previous passwords used by a user that cannot be reused. e.g. If set to `5` the user upon setting their password cannot reuse any of their 5 most recently used password for that Tyk user account.
+* `security.force_first_login_pw_reset` A newly created user will be forced to reset their password upon first login. Defaults to `false`.
 
 # Ability to publish keyless APIs to the developer portal
 
