@@ -81,8 +81,13 @@ The file will look like the sample below, the various fields are explained in th
     "audit_log_path": "/tmp/audit.log",
     "allow_admin_reset_password": false
   },
-  "dashboard_session_lifetime": 60
-
+  "dashboard_session_lifetime": 60,
+  "audit": {
+    "enabled": true,
+    "format": "json",
+    "path": "/tmp/audit.log",
+    "detailed_recording": false
+  }
 }
 ```
 
@@ -219,6 +224,10 @@ For legacy installs or upgrades using the host manager, leave this value as `fal
   "key_file": "new.cert.key"
 }
 ```
+
+*   `http_server_options.ssl_ciphers`: Array of allowed cipher suites as defined at https://golang.org/pkg/crypto/tls/#pkg-constants
+
+*   `http_server_options.prefer_server_ciphers`: Boolean value to control whether server selects the client's most preferred ciphersuite, or the server's most preferred ciphersuite. If set to `true`, the server's preference in order of the elements in `ssl_ciphers` is used.
     
 For more information see [TLS and SSL](/docs/security/tls-and-ssl/)
 
@@ -234,7 +243,7 @@ For more information see [TLS and SSL](/docs/security/tls-and-ssl/)
 
 *   `security.login_disallow_forward_proxy`: Set to `true` to allow the Tyk Dashboard login to ignore the host from the `X-Forwarded-For` header when accessing the Dashboard via a proxy. This can be useful for limiting retry attempts.    
 
-*   `security.audit_log_path`: This sets the path to your audit log. It will log all user actions and response statuses to it. Security information such as passwords are not logged.
+*   `security.audit_log_path`: This sets the path to your audit log and enables audit with default settings. It will log all user actions and response statuses to it. Security information such as passwords are not logged.
 
 *   `security.allow_admin_reset_password`: This allows an admin user to reset the password of other users. The default is false.
 
@@ -279,6 +288,48 @@ If you set this value to `true`, then the `id` parameter in a stored policy (or 
 *   `sso_custom_portal_login_url`: Specify custom portal login url if you are using 3rd party authentication like TIB.
 
 *   `enable_multi_org_users`: As of 1.8, this enables the ability to share users across multiple organisations in a Tyk Dashboard Installation (Note: requires > 2 node licence). 
+
+> **NOTE:** `audit` is available from v1.8 onwards
+
+*   `audit`: This section specifies settings for audit logging. All Dashboard API requests with URI starting with `/api` will be logged in audit log.
+
+*   `audit.enabled`: Enables audit logging, set to `false` by default. NOTE: setting value `security.audit_log_path` has the same effect as setting `enabled` to `true`
+
+*   `audit.format`: Specifies the format of audit log file, possible values are `json` and `text` (`text` is default value)
+
+*   `audit.path`: Specifies path to file with audit log, overwrites value `security.audit_log_path` if it was set
+
+*   `audit.detailed_recording`: Enables detailed records in audit log, by defaultt set to `false`. If set to `true` then audit log records will contain http-request (without body) and full http-response including body
+
+Audit record fields for `json` format:
+
+*   `req_id` - unique request ID
+
+*   `org_id` - organization ID
+
+*   `date` - date in `RFC1123` format
+
+*   `timestamp` - unix timestamp
+
+*   `ip` - IP address the request was originating from
+
+*   `user` - dashboard user who performed the request
+
+*   `action` - description of action performed (`i.e. `Update User`)
+
+*   `method` - HTTP-method of the request
+
+*   `url` - URL of the request
+
+*   `status` - HTTP response status of the request
+
+*   `diff` - provides diff of changed fields (available only for PUT requests)
+
+*   `request_dump` - HTTP request copy (available if `audit.detailed_recording` is set to `true`)
+
+*   `response_dump` - HTTP response copy (available if `audit.detailed_recording` is set to `true`)
+
+Audit record fields for `text` format - all fields are in plain text separated with new line and provided in the same order as fields for `json` format. 
 
 ### Environment variables
 

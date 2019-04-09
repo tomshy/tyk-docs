@@ -4,7 +4,7 @@ title: API Definitions
 menu:
   main:
     parent: "Tyk Dashboard API"
-weight: 1 
+weight: 1
 ---
 
 ### Get List of APIs
@@ -147,6 +147,9 @@ Similar to API list response
 | Type         | None             |
 | Body         | None             |
 | Param        | None             |
+
+> `{id}` can either be the internal or public ID ( see `api_id` in the [sample
+response](#sample-response-1) )
 
 #### Sample request
 
@@ -463,7 +466,7 @@ APIs that are created using the advanced Dashboard API are referenced by their i
 
 | **Property** | **Description**           |
 | ------------ | ------------------------- |
-| Resource URL | `/api/apis/{internal_id}` |
+| Resource URL | `/api/apis/{internal_or_external_id}` |
 | Method       | PUT                       |
 | Type         | None                      |
 | Body         | Advanced API Definition   |

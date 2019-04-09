@@ -39,6 +39,8 @@ weight: 13
 | http_server_options.certificates         | TYK_DB_HTTPSERVEROPTIONS_CERTIFICATES        |
 | http_server_options.min_version          | TYK_DB_HTTPSERVEROPTIONS_MINVERSION          |
 | http_server_options.use_ssl              | TYK_DB_HTTPSERVEROPTIONS_USESSL              |
+| http_server_options.ssl_ciphers          | TYK_DB_HTTPSERVEROPTIONS_SSLCIPHERS          |
+| http_server_options.prefer_server_ciphers| TYK_DB_HTTPSERVEROPTIONS_PREFERSERVERCIPHERS |
 | license_key                              | TYK_DB_LICENSEKEY                            |
 | listen_port                              | TYK_DB_LISTENPORT                            |
 | maintenance_mode                         | TYK_DB_MAINTENANCEMODE                       |
@@ -58,6 +60,7 @@ weight: 13
 | sentry_js_code                           | TYK_DB_SENTRYJSCODE                          |
 | show_org_id                              | TYK_DB_SHOWORGID                             |
 | sso_custom_login_url                     | TYK_DB_SSOCUSTOMLOGINURL                     |
+| sso_custom_portal_login_url              | TYK_DB_SSOCUSTOMPORTALLOGINURL               |
 | storage.optimisations_max_active         | TYK_DB_STORAGE_MAXACTIVE                     |
 | storage.optimisations_max_idle           | TYK_DB_STORAGE_MAXIDLE                       |
 | tagging_options.tag_all_apis_by_org      | TYK_DB_TAGGINGOPTIONS_TAGALLAPISBYORG        |
