@@ -13,8 +13,8 @@ on defined conditions.
 
 During URL rewrites, instead of rewriting to some HTTP endpoint, you now can tell Tyk to internally run its request 
 pipeline one more time, but for another specified endpoint. In Tyk terms it called `looping` or adding a `loop`.  
-In order to specify a `loop`, in the target URL, you should specify string of the following format: `tyk://self/<path>`. 
-You can loop to another API as well, by specifying API name or id instead of `self`: `tyk://<api-id>/<path>`.
+In order to specify a `loop`, in the target URL, you should specify a string in the following format: `tyk://self/<path>`. 
+You can loop to another API as well, by specifying the API name or id instead of `self`: `tyk://<api-id>/<path>`.
 
 Combined with advanced URL rewriter rules, it can be turned into a powerful logical block, replacing the need for 
 writing middleware or virtual endpoints in a lot of cases.
@@ -22,37 +22,37 @@ writing middleware or virtual endpoints in a lot of cases.
 ### Example
 
 You have an endpoint, which will perform different logic depending on the specific header. In our case, for simplicity, 
-it can be the `/get` endpoint which by default returns XML and if `Accept` header in request equals to 
-`application/json` it returns JSON response. With the new looping functionality you will need to define 2 endpoints: 
+it can be the `/get` endpoint which by default returns XML and if the `Accept` header in the request equals to 
+`application/json` it returns a JSON response. With the new looping functionality you will need to define 2 endpoints: 
 
-* /get - the endpoint the user hits, and which contains our logical block
+* /get - the endpoint the user hits, and which contains our logical block.
 * /get-json - the internal endpoint, where you will loop to if the condition is met. It contains a body transform logic 
 to rewrite XML response to JSON.
 
-Inside the `/get` endpoint you add a URL rewrite plugin, with an advanced rule, which looks to see if `Accept` header 
+Inside the `/get` endpoint you add a URL rewrite plugin, with an advanced rule, which looks to see if the `Accept` header 
 equals `application/json`, and rewrites the target to `tyk://self/get-json` URL.
 
-Another example will be conditionally processing SOAP requests based on content of the POST body. So you can define 
-an individual request pipeline for each SOAP request, based on conditions defined in URL rewriter rules.
+Another example would be conditionally processing SOAP requests based on the content of the POST body. So you can define 
+an individual request pipeline for each SOAP request, based on conditions defined in the URL rewriter rules.
 
 ---
 
 ## Debugger
 
-Now you can safely test all API changes, without publishing them, and visually see the whole request flow, including 
+You can now safely test all API changes, without publishing them, and visually see the whole request flow, including 
 which plugins are running and even their individual logs.
 
 We have added a new API designer tab called `Debugging`,  which provides a "Postman" like http client interface to 
 simulate HTTP queries for the current API definition being edited.
 
-You can even debug your virtual endpoints, by dynamically modifying the code, sending the request via `Debugger` and 
+You can even debug your virtual endpoints by dynamically modifying the code, sending the request via `Debugger` and 
 watching for the virtual endpoint plugin logs.
 
 ---
 
 ## Separate rate limits and quotas per API within the same Policy
 
-If you set the `Limits and Quotas per API` flag while configuring policy,  you will be able to configure separate rate 
+If you set the `Limits and Quotas per API` flag while configuring a policy, you will be able to configure separate rate 
 limits and quotas per API. 
 
 Note that you can’t mix this functionality with 
@@ -71,7 +71,7 @@ during login, and easily switch between organizations using navigation menu. To 
 ## Request throttling
 
 In cases of hitting quota or rate limits, Tyk Gateway now can automatically queue and auto-retry client requests. 
-Throttling can be configured on a key or policy level via new fields: `throttle_interval` and `throttle_retry_limit`. 
+Throttling can be configured at a key or policy level via two new fields: `throttle_interval` and `throttle_retry_limit`. 
 
 1. `throttle_interval`: Interval(seconds) between each request retry.
 2. `throttle_retry_limit`: Total request retry number.
@@ -81,8 +81,8 @@ Throttling can be configured on a key or policy level via new fields: `throttle_
 ## Password policy improvements
 
 * `security.user_password_max_days` Set the maximum lifetime of a password for a user. 
-  They will be prompted to reset if password lifetime exceeds the configured expiry value. 
-  e.g. if value set to `30` any user password set over 30 days in past will be considered invalid and must be reset.
+  They will be prompted to reset if a password lifetime exceeds the configured expiry value. 
+  e.g. if the value is set to `30` any user password set over 30 days in past will be considered invalid and must be reset.
 * `security.enforce_password_history` Set a maximum number of previous passwords used by a user that cannot be reused. 
   e.g. If set to `5` the user upon setting their password cannot reuse any of their 5 most recently used password for 
   that Tyk user account.
@@ -103,17 +103,17 @@ You can now have the same Portal experience for your open APIs. All the function
 Portal templates now have access to the Developer object, its subscriptions, and issued key meta-data, providing the 
 ability to conditionally show or hide content inside the Portal based on attributes mentioned below:
 
-The Current logged in Developer can be accessed using `.Profile` variable with the following fields:
+The Current logged in Developer can be accessed using the `.Profile` variable with the following fields:
 
 * `Id` - Internal developer ID
 * `Email` - Developer email
 * `OrgID` - Tyk Organization ID
-* `Subscriptions`  - Map containing subscriptions where key is a policy ID and value is an API key
+* `Subscriptions`  - Map containing subscriptions where the key is a policy ID and the value is an API key
 * `Fields` - Map containing custom developer fields
-* `OauthClients` - Map containing list of registered oAuth clients, where Key is the policy ID.
+* `OauthClients` - Map containing list of registered oAuth clients, where the key is the policy ID.
 
 The Current logged in Developer detailed subscription object can be accessed using the `.APIS` variable, containing map, 
-  where the key is PolicyID and value of the following format: 
+  where the key is a policy ID and the values in the following format: 
 
 * `APIDescription` - API definition
     * `ID` - Internal API id
@@ -157,12 +157,12 @@ Similar functionality based on Key meta can look like:
 ## Custom analytics storage engines for Multi-Cloud & Enterprise MDCB users
 
 Multi-Cloud & Enterprise MDCB installations can now leverage the power of Tyk Pump and send analytics to custom sources 
-like ElasticSearch or InfluxDB from within their local Data-Centres. 
+like ElasticSearch or InfluxDB from within their local Data-Centers. 
 
-The main idea is that you disable sending the Tyk Gateway analytics to the Multi-Cloud / Master layer by the Gateway 
+The main idea is that you disable sending the Tyk Gateway analytics to the Multi-Cloud / Master layer from the Gateway 
 itself, and by doing so, allow the Tyk Pump process to take care of it.
 
-In order to do that, you need to 
+In order to do that, you need to: 
 
 * Install Tyk Pump, with `hybrid` pump with the following configuration:
 
@@ -183,7 +183,7 @@ In order to do that, you need to
 }
 ```
 
-* Enable Tyk Pump in the Tyk Gateway configuration, by changing `analytics_config.type` from `rpc` to empty value.
+* Enable Tyk Pump in the Tyk Gateway configuration, by changing `analytics_config.type` from `rpc` to an empty value.
 
 Now you can add additional pumps to the Tyk Pump config.
 
@@ -207,7 +207,7 @@ Note that this extends to any route that requires `api_id` in the path.
 
 ## Dashboard Audit Log improvements
 
-There is a new section in dashboard config file where you can specify parameters for audit log (contains audit records 
+There is a new section in the Tyk Dashboard config file where you can specify parameters for audit log (contains audit records 
   for all requests made to all endpoints under `/api` route).
 
 ```
@@ -221,10 +221,10 @@ There is a new section in dashboard config file where you can specify parameters
   ...
 ```
 
-- `enabled` - enables audit logging, set to `false` by default. NOTE: setting value `security.audit_log_path` has the same effect as setting `enabled` to `true`
-- `format` - specifies the format of audit log file, possible values are `json` and `text` (`text` is default value)
+- `enabled` - enables audit logging, set to `false` by default. NOTE: setting the value `security.audit_log_path` has the same effect as setting `enabled` to `true`
+- `format` - specifies the format of audit log file. Possible values are `json` and `text` (`text` is default value)
 - `path` - specifies path to file with audit log, overwrites value `security.audit_log_path` if it was set
-- `detailed_recording` - enables detailed records in audit log, by default set to `false`. If set to `true` then audit log records will contain http-request (without body) and full http-response including body`
+- `detailed_recording` - enables detailed records in the audit log, by default set to `false`. If set to `true` then audit log records will contain http-request (without body) and full http-response including body`
 
 Audit record fields for `json` format:
 
@@ -233,7 +233,7 @@ Audit record fields for `json` format:
  *   `date` - date in `RFC1123` format
  *   `timestamp` - unix timestamp
  *   `ip` - IP address the request was originating from
- *   `user` - dashboard user who performed the request
+ *   `user` - Dashboard user who performed the request
  *   `action` - description of action performed (`i.e. `Update User`)
  *   `method` - HTTP-method of the request
  *   `url` - URL of the request
@@ -242,7 +242,7 @@ Audit record fields for `json` format:
  *   `request_dump` - HTTP request copy (available if `detailed_recording` is set to `true`)
  *   `response_dump` - HTTP response copy (available if `detailed_recording` is set to `true`)
  
- If you specidy `text` format - all fields are in plain text separated with new line and provided in the same order as fields for `json` format.
+ If you specify `text` format - all fields are in plain text separated with new line and provided in the same order as fields for `json` format.
 
 ---
 
@@ -255,7 +255,7 @@ The Command Behaviour remains the same, but instead of using `tyk-cli bundle` yo
 
 ## Basic Auth - Extract Credentials from Body
 
-It is now possible to extract BasicAuth credentials from request body. This is particular useful in SOAP requests.
+It is now possible to extract BasicAuth credentials from the request body. This is particularly useful in SOAP requests.
 
 ```text
 <soapenv:Envelope
@@ -284,11 +284,11 @@ You can modify your API definition to let Tyk know how to get the credentials:
 
 ## Insecure Skip Verify on a per-api basis
 
-Previously, it was possible to get Tyk Gateway to skip tls verification globally (for ALL apis), but it not possible to 
+Previously, it was possible to get Tyk Gateway to skip TLS verification globally (for ALL apis), but it was not possible to 
   enable this on a per-api basis. This meant that it was not previously possible to use self-signed certificates for 
   some APIs, and actual certs for others.
   
-It is now possible to control which APIs to skip secure verification as follows within the API Definition object:
+It is now possible to control which APIs use skip secure verification as follows within the API Definition object:
 
 `api_definition.proxy.transport.ssl_insecure_skip_verify: bool` - Defaults to `false`.
 
