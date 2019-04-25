@@ -53,10 +53,18 @@ watching for the virtual endpoint plugin logs.
 ## Separate rate limits and quotas per API within the same Policy
 
 If you set the `Limits and Quotas per API` flag while configuring a policy, you will be able to configure separate rate 
-limits and quotas per API. 
+limits and quotas per API.  
 
 Note that you can’t mix this functionality with 
 [partitioned policies](https://tyk.io/docs/security/security-policies/partitioned-policies/).
+
+---
+
+## Developer portal oAuth support
+
+Developer portal now full supports exposing oAuth2 APIs:
+* Developers can register their oAuth clients and see analytics
+* Administrators can see list of oAuth clients from developer screen
 
 ---
 
@@ -90,6 +98,18 @@ Throttling can be configured at a key or policy level via two new fields: `throt
   Defaults to `false`.
 
 ---
+
+## Developer management improvements
+* Now you can manually create developer subscriptions from developer screen.
+* Added quick way to change subscription policy and reset quota
+* All actions on developer screen now require only developer permissions 
+
+---
+
+## Key hashing improvements
+
+Now you can enable updating keys by having only its hash. Controllable via `enable_update_key_by_hash` dashboard config variable.
+
 
 ## Ability to publish keyless APIs to the developer portal
 
@@ -189,22 +209,6 @@ Now you can add additional pumps to the Tyk Pump config.
 
 ---
 
-## Retrieval of API by it's external ID
-
-It is now possible to make use of either the internal or external/public ID for requests that need to identify an API. 
-The internal ID is the MongoDB ID which is a BSON object ID while the external/public ID is the identifier that is also 
-  known as `api_id`.
-
-For example, if you are trying to fetch the list of Oauth apps for an API, you can make use of either of the following 
-endpoints:
-
-- Making use of the internal ID: `/api/apis/oauth/5cac7ad816e579140e568c70`
-- Making use of the external ID: `/api/apis/oauth/057a4e6941ef48c6672145240a6df1cb`
-
-Note that this extends to any route that requires `api_id` in the path.
-
----
-
 ## Dashboard Audit Log improvements
 
 There is a new section in the Tyk Dashboard config file where you can specify parameters for audit log (contains audit records 
@@ -299,12 +303,13 @@ Tyk's JSVM `TykMakeHttpRequest` function, will also respect the above configurat
 ## Detailed changelog
 
 ### Tyk Gateway 2.8.0
-
 - URL rewrite advanced rules extended with looping support, allowing you to build complex request pipelines.
 - Added Admin Debugger API 
 - SSL verification now can be disabled at the API level, in addition to the global level, using the new `proxy.transport.ssl_insecure_skip_verify` boolean variable.
 - You can rename the default `/hello` healthcheck endpoint using the new gateway `health_check_endpoint_name` string variable. 
+- Basic auth plugin now can extract credentials from request body
 - Bundler CLI tools now built in to the Tyk binary
+- Allow updating keys by hash
 
 ### Tyk Dashboard 1.8.0
 
@@ -312,9 +317,10 @@ Tyk's JSVM `TykMakeHttpRequest` function, will also respect the above configurat
 - Extended Portal templating functionality.
 - Similar to the Gateway, you now can whitelist a list of acceptable TLS ciphers using the 
   `http_server_options.cipher_suites` array option.
-- Numerous UX and performance improvements
 - Audit log improvements
+- Exposing oAuth2 APIs to developer portal
 - Allow for the retrieval of an API via it's external API
+- Allow updating keys by hash
 
 ### Tyk Pump 0.6
 
