@@ -1,4 +1,4 @@
-### Import API - Swagger
+### Import API - Swagger/OpenAPI
 
 | **Property** | **Description**           |
 | ------------ | ------------------------- |

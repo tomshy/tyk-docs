@@ -142,9 +142,9 @@ Now you can add a `?block=true` argument to the `/tyk/reload` API endpoint, whic
 
 Internal JS API not budled into tyk binary, and `js/tyk.js` file used only for custom user code. It is recommended to delete this file, if you are not using it, or remove Tyk internal code from it. New releases do not ship this file by default.
 
-### Improved Swagger API import defaults
+### Improved Swagger/OpenAPI API import defaults
 
-When importing Swagger based APIs they now generate tracked URLs instead of white listed ones.
+When importing Swagger/OpenAPI based APIs they now generate tracked URLs instead of white listed ones.
 
 [More](https://github.com/TykTechnologies/tyk/issues/643)
 

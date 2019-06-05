@@ -1,4 +1,4 @@
-## Tutorial: Add an API and Swagger based Docs to a Portal Catalogue
+## Tutorial: Add an API and Swagger/OpenAPI based Docs to a Portal Catalogue
 
 You can use the Tyk Dashboard to create a portal that allows developers to access the APIs you create.
 
@@ -51,8 +51,8 @@ An API will not be published until you select **Show API**:
 
 ### Step 6: Attach Documentation
 You can add import documentation in the following formats:
-* From a Swagger file
-* From a Swagger URL
+* From a JSON based OpenAPI file (both 2.0 and 3.0 [specifications](https://swagger.io/docs/specification/about/) are supported)
+* From a Swagger/OpenAPI URL
 * From API Blueprint
 
 From v1.4, you can add your documentation before or after saving your API.

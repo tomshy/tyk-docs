@@ -15,7 +15,7 @@ If you want to have specific behaviours applied to a path (for example, a header
 
 > **Note**: you do not need to define your whole API in the editor, only those paths you want to manage. The exception to this is if you are using a whitelist, in which case you will need to specify every endpoint as all others will be blocked.
 
-By default, importing an API using Swagger or API Blueprint definitions will generate a whitelist.
+By default, importing an API using Swagger/OpenAPI or API Blueprint definitions will generate a whitelist.
 
 To get started, click **Add Endpoint**, this will give you an empty path definition:
 

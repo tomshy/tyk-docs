@@ -203,7 +203,7 @@ Setting this option to `true` will cause the dashboard to not validate against o
 org-slug.hostname.com/api-slug
 ```
     
-However, if you are not using the host manager, then domains are hard-coded per api, or at a gateway level, and the org-slug moniker is not needed to construct demo URLs (e.g. for Swagger docs and the API pages). To stop this guessing behaviour, change this option to `true` and the Dashboard will stop trying to add an org-slug to the start of URL's.
+However, if you are not using the host manager, then domains are hard-coded per api, or at a gateway level, and the org-slug moniker is not needed to construct demo URLs (e.g. for Swagger/OpenAPI docs and the API pages). To stop this guessing behaviour, change this option to `true` and the Dashboard will stop trying to add an org-slug to the start of URL's.
     
 For legacy installs or upgrades using the host manager, leave this value as `false`.
 
