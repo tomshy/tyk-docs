@@ -21,7 +21,6 @@ Tyk has support for Mutual TLS in the following areas:
 * Authorisation (white-listing certificates on API level)
 * Authentication (creating keys based on certificates)
 * Upstream access (including JSVM HTTP calls)
-* Admin APIs for Gateway, Dashboard, and MDCB, including internal communication between those products
 
 The main requirement to make it work is that SSL traffic should be terminated by Tyk itself. If you are using a load balancer, you should configure it to work in TCP mode.
 
@@ -34,7 +33,7 @@ Let's start with certificate definition. Here is what [Wikipedia](https://en.wik
 
 > In cryptography, a public key certificate, also known as a digital certificate or identity certificate, is an electronic document used to prove the ownership of a public key. The certificate includes information about the key, information about the identity of its owner (called the subject), and the digital signature of an entity that has verified the certificate's contents (called the issuer). If the signature is valid, and the software examining the certificate trusts the issuer, then it can use that key to communicate securely with the certificate's subject.
 
-When it comes to authorisation, it is enough for the server that has public client certificate in its trusted certificate storage, to trust it. However, if you need send a request to the server protected by mutual TLS, or need to configure the TLS server itself, you also need to have a private key, used while certificate generation, to sign the request.
+When it comes to authorisation, it is enough for the server that has public client certificate in its trusted certificate storage, to trust it. However, if you need send a request to the server protected by Mutual TLS, or need to configure the TLS server itself, you also need to have a private key, used while certificate generation, to sign the request.
 
 Using Tyk, you have two main certificate use cases:
 
@@ -71,6 +70,13 @@ openssl x509 -noout -fingerprint -sha256 -inform pem -in <cert>.
 ```
 
 You may notice that you can't get the raw certificate back, only its meta information. This is to ensure security. Certificates with private keys have special treatment and are encoded before storing: if a private key is found it gets encrypted with AES256 algorithm 3 using `security.private_certificate_encoding_secret` from the Gateway configuration file and if it is empty, it will fallback to the value in the field [secret](https://tyk.io/docs/configure/tyk-gateway-configuration-options/#a-name-secret-a-secret).
+
+### <a name="mdcb"></a> MDCB 
+Mutual TLS configuration in an MDCB environment has specific requirements. An MDCB environment usually consists of a management environment and slaves who, using MDCB, sync configuration. 
+The Management and slave environments usually do not share any secrets; thus a certificate with private keys encoded with secret in management Gateway, will not be accessible to slaves. 
+
+To solve this issue, you need set `security. private_certificate_encoding_secret`  in the MDCB configuration file, to the same value as specified in your management gateway configuration file. By knowing the original secret, MDCB will be able to decode private keys, and 
+send them to client without password. Using secure connection between slave Gateways and MDCB is required in this case. See MDCB setup page for use_ssl usage.
 
 ## <a name="authorisation"></a> Authorisation 
 At the TLS level, authorisation means allowing only clients who provide client certificates that are verified and trusted by the server. 
@@ -132,12 +138,6 @@ To do the same via the Tyk Dashboard, go to the **API Designer** > **Advanced Op
 
 ![add_upstream_cert][5]
 
-## <a name="mdcb"></a> MDCB 
-Mutual TLS configuration on an MDCB environment has its specific requirements. An MDCB environment usually consists of a management environment and slaves who, using MDCB, sync configuration. 
-The Management and slave environments usually do not share any secrets; thus a certificate with private keys encoded with secret in management gateway, will not be accessible to slaves. 
-
-To solve this issue, you need set `security. private_certificate_encoding_secret`  in the MDCB configuration file, to the same value as specified in your management gateway configuration file. By knowing the original secret, MDCB will be able to decode private keys, and 
-send them to client without password. Using secure connection between slave Gateways and MDCB is required in this case. See MDCB setup page for use_ssl usage.
 
 ## <a name="tips-tricks"></a> Tips and Tricks 
 You can create self-signed client and server certificates with this command:
