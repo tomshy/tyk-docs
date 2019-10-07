@@ -1,13 +1,11 @@
 ---
 date: 2017-03-23T13:02:38Z
-title: API Catalogue
+title: Portal API Catalogue
 menu:
   main:
     parent: "Concepts"
-weight: 7 
+weight: 90
 ---
-
-## Concept: API Catalogue
 
 The API Catalogue is part of the API Developer Portal of the Dashboard. It is the central place for you to manage which APIs your registered developers have access to.
 

@@ -84,13 +84,11 @@ To install Tyk manually, please see the [guide to setting up Tyk on Kubernetes](
 
 ## Tyk Kubernetes Ingress and Service Mesh Controller
 
-We provide a Kubernetes controller that enables Tyk to be used as both a native Ingress controller (expose services using an Ingress specification), and as a service mesh sidecar injector. The source code for the controller can be seen in our Github repository here:
+We provide a Kubernetes controller that enables Tyk to be used as both a native Ingress controller (expose services using an Ingress specification), and as a service mesh sidecar injector. See [installing and configuring our Ingress and Service Mesh Controller](/docs/get-started/with-tyk-on-premise/installation/docker/with-kubernetes/tyk-kubernetes-ingress-controller/) for more details. The source code for the controller can be seen in our Github repository:
 
 https://github.com/TykTechnologies/tyk-helm-chart#using-the-ingress-controller
 
 ## Tyk as a Service Mesh
 
-To use Tyk as a Service Mesh sidecar injector, see the quick guide here:
-
-https://github.com/TykTechnologies/tyk-helm-chart#using-the-injector
+See [using Tyk as a Service Mesh sidecar injector](/docs/get-started/with-tyk-on-premise/installation/docker/with-kubernetes/tyk-kubernetes-ingress-controller/#using-tyk-for-your-service-mesh) for more details.
 

@@ -1,13 +1,11 @@
 ---
 date: 2017-03-23T13:01:30Z
-title: Context Variables
+title: Request Context Variables
 menu:
   main:
     parent: "Concepts"
-weight: 6 
+weight: 65 
 ---
-
-## Concept: Context Variables
 
 Context variables are extracted from the request at the start of the middleware chain, and must be explicitly enabled in order for them to be made available to your transforms. These values can be very useful for later transformation of request data, for example, in converting a Form-based POST into a JSON-based PUT or to capture an IP address as a header.
 

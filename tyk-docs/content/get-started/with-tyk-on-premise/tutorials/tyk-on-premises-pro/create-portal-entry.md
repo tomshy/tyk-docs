@@ -66,6 +66,9 @@ This process will bind your organisations' Portal to the domain name you've spec
 
 > **Note**: If you installed [Tyk On-Premises for Vagrant][2], you will have created a `etc/hosts` entry of `portal-instance.com`. You should enter this hostname in the drop-down.
 
+> **NOTE**: You need to restart your Dashboard service for the changes to take effect.
+
+
 ### Step 7: Log into your Portal
 
 Select **Open Your Portal** from the **Your Developer Portal** menu drop-down, a new page will open with your new (most likely empty) Portal home page.

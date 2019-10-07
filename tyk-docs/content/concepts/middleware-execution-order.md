@@ -1,9 +1,9 @@
 ---
-title: Middleware Execution Order
+title: Request Middleware Chain
 menu:
   main:
     parent: "Concepts"
-weight: 10 
+weight: 70
 ---
 
 To aid the debugging of middleware transformations, below is a diagram that illustrates the flow of a request.

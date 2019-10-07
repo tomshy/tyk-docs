@@ -15,7 +15,7 @@ weight: 2
 
 | **Property** | **Description**            |
 | ------------ | -------------------------- |
-| Resource URL | `/api/apis/{api-id}}/keys` |
+| Resource URL | `/api/apis/{api-id}/keys` |
 | Method       | GET                        |
 | Type         | None                       |
 | Body         | None                       |

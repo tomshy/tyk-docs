@@ -55,11 +55,11 @@ How to use our APIs.
 
 ### Current Versions
 
-* Tyk Gateway v2.8.2
-* Tyk Dashboard v1.8.2
-* Tyk Pump v0.6.0
+* Tyk Gateway v2.8.5
+* Tyk Dashboard v1.8.5
+* Tyk Pump v0.7.2
 * Tyk Identity Broker (TIB) v0.6.0
-* MDCB v1.6.0
+* MDCB v1.6.1
 
 
 

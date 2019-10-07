@@ -1,13 +1,11 @@
 ---
 date: 2017-03-23T12:56:30Z
-title: What is a Session Object?
+title: Session Object
 menu:
   main:
     parent: "Concepts"
-weight: 2 
+weight: 80 
 ---
-
-## Concept: API Session Object
 
 In Tyk, all identities are mapped to a session object. Identities can be in the form of Bearer Tokens, HMAC Keys, JSON Web Tokens, OpenID Connect identities and Basic Auth users.
 

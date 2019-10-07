@@ -1,13 +1,11 @@
 ---
 date: 2017-03-23T12:53:47Z
-Title: What is an API Definition?
+Title: API Definition Object
 menu:
   main:
     parent: "Concepts"
-weight: 1 
+weight: 55
 ---
-
-## Concept: API Definition
 
 Tyk handles APIs through files / objects called API Definitions – these are JSON objects – and either live in the `/var/tyk-gateway/apps` directory or in a MongoDB collection as part of a Pro Edition installation.
 

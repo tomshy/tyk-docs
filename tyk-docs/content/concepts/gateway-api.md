@@ -5,10 +5,8 @@ menu:
   main:
     parent: "Concepts"
     identifier: concepts-gateway-api
-weight: 8 
+weight: 95 
 ---
-
-## Concept: Gateway API
 
 The Tyk Gateway REST API is the primary means for integrating your application with the Tyk API Gateway system. This API is very small, and has no granular permissions system. It is intended to be used *purely* for internal automation and integration.
 

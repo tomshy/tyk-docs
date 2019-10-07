@@ -153,3 +153,44 @@ These headers can also include **meta-data that is part of the session object** 
 ### Versions
 
 At the top of the Endpoint Designer you can see which version you are currently editing. If you have more than one option, selecting it from the drop-down will load it's endpoint configuration into the editor.
+
+## Debugging
+
+The Endpoint Designer has a Debugging tab that allows you to test your endpoints before you publish or update them. You can also use it for testing any middleware plugins you have implemented. Any debugging you create will persist while still in the Endpoint Designer for the current API, enabling you to make changes in the rest of the API settings without losing the debugging scenario.
+
+The Debugging tab consists of the following sections:
+
+* Request
+* Response
+* Logs
+
+### Request
+
+![Debugging Request][1]
+
+In this section you can enter the following information:
+
+* Method - select the method for your test from the drop-down list
+* Path - your endpoint to test
+* Headers/Body - enter any header information, such as Authorization, etc. Enter any body information. For example, entering user information if creating/updating a user.
+
+Once you have entered all your request information, click RUN. Debugging Response and Log information will be displayed:
+
+### Response
+
+![Debugging Response][2]
+
+The Response section shows the JSON response for your request.
+
+### Logs
+
+![Debugging Logs][3]
+
+The debugging level is set to **debug** for the request. This outputs all logging information in the Endpoint Designer. In the Tyk Gateway logs you will see a single request. Any Error messages will be displayed at the bottom of the Logs output.
+
+
+
+[1]: /docs/img/dashboard/system-management/debugging_request.png
+[2]: /docs/img/dashboard/system-management/debugging_response.png
+[3]: /docs/img/dashboard/system-management/debugging_log_error.png
+

@@ -101,7 +101,9 @@ The file will look like the sample below, the various fields are explained in th
 
 * `listen_port`: Setting this value will change the port that Tyk Dashboard listens on. By default Tyk will try to listen on port `3000`.
 
-* `notifications_listen_port`: port used for websockets connection for real-time dashboard notifications. Defaults to `5000`.
+* `notifications_listen_port`: port used for WebSocket connections for real-time dashboard notifications. Defaults to `5000`.
+
+> **NOTE**: You may see `net::ERR_CONNECTION_REFUSED` errors in the browser console if you don't have port 5000 open. See [Port 5000 Errors in the Browser Console](/docs/troubleshooting/tyk-dashboard/port-5000-errors/).
 
 * `tyk_api_config`: This section contains details for a Tyk Gateway node that the Tyk Dashboard can speak to. The Dashboard controls Tyk using the Gateway API and only requires visibility to one node, so long as all nodes are using the same API Definitions.
     

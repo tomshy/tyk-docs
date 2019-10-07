@@ -168,7 +168,6 @@ input {line-height: 48px; }
 input, textarea {color: #5a5a68; padding-left: 18px; width: 100%;  border-left:10px solid transparent; }
 textarea {padding: 18px; height: 220px;}
 input:valid, textarea:valid {border-color: #00d9ba; }
-input:placeholder-shown:valid, textarea:placeholder-shown:valid {border-color: #000018; }
 input:invalid, textarea:invalid {border-color: #d23059; }
 input:placeholder-shown:invalid, textarea:placeholder-shown:invalid {border-color: transparent; }
 input:required:placeholder-shown, textarea:required:placeholder-shown {border-color: #000018; }
@@ -620,7 +619,6 @@ html, body {height: 100%;}
 .search input {height: 48px; border:1px solid #676773; text-align: center; border-radius: 24px; letter-spacing: 0.15em;}
 .search button {height: 48px; width: 48px; font-size: 18px; position: absolute; top:0; left: 0; }
 .search button, .search input { background: transparent; text-transform: uppercase; } 
-.search input:placeholder-shown:valid { border-color: #676773; }
 .search input::-webkit-input-placeholder {color: #676773;}
 .search input:-moz-placeholder {color: #676773;}
 .search input::-moz-placeholder {color: #676773;}

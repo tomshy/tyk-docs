@@ -12,6 +12,10 @@ url: "/troubleshooting/tyk-installation"
 
 [Dashboard bootstrap.sh Script Returns a "Unable to parse JSON" Error](/docs/troubleshooting/tyk-installation/dashboard-bootstrap.sh-script-returns-parsing-json-error/)
 
-[“Payload signature is invalid!“ error](/docs/troubleshooting/tyk-installation/payload-signature-invalid-error/)
+["Payload signature is invalid" error](/docs/troubleshooting/tyk-installation/payload-signature-invalid-error/)
+
+["Error initialising system: couldn't unmarshal config: invalid character" error](/docs/troubleshooting/tyk-installation/couldnt-unmarshal-config-error/)
+
+
 
 

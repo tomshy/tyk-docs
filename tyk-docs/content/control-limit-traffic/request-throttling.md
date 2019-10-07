@@ -9,7 +9,10 @@ weight: 2
 
 ## Request Throttling Overview
 
-Request Throttling enhances rate limiting. When a request is not allowed because of rate limiting, it retries the same request at a specified number of intervals for a specified number of times.
+From v2.8, when hitting quota or rate limits, the Gateway now can now automatically queue and auto-retry client requests. Throttling can be configured at a key or policy level via two new fields: `throttle_interval` and `throttle_retry_limit`. 
+
+1. `throttle_interval`: Interval(in seconds) between each request retry.
+2. `throttle_retry_limit`: Total request retry number.
 
 
 ### Can I disable Request Throttling?
@@ -37,4 +40,4 @@ You should set two values:
 
 
 
-[1]: /docs/img/dashboard/system-management/request_throttling_2.8.png
+[1]: /docs/img/dashboard/system-management/throttling_update.png

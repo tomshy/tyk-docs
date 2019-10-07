@@ -19,9 +19,9 @@ To enable multi chained auth in your GUI, first browse to the Endpoint Designer 
 
 In this section you can chose the various authentication methods, each selection provides a different settings window, in this case, we will want to configure many auth providers, so it works slightly differently.
 
-#### 2\. Select the Multitiple Auth Mechanisms Option
+#### 2\. Select the Multiple Auth Mechanisms Option
 
-Select the **Use Multiple Auth Mechanisms** from the drop-down list. This will open up a window that provides checkboxes for each supported auth type to be chained.
+Select the **Use Multiple Auth Mechanisms** from the drop-down list. This will open up a window that provides check-boxes for each supported auth type to be chained.
 
 It is not possible to set the order of chained auth methods.
 

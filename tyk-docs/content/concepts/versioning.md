@@ -1,10 +1,11 @@
 ---
-title: Versioning
+title: API Versioning
 menu:
   main:
     parent: "Concepts"
-weight: 5
+weight: 60
 ---
+
 ## <a name="why-version"></a>Why Version your APIs?
 Tyk enables full version life-cycle management for your APIs. It includes the ability to define different configurations for different versions of an API and have Tyk manage route and middleware configurations on the same listen path of any given API. By default, Tyk expects to find version information in a header key, a query parameter or the first part of a URL.
 

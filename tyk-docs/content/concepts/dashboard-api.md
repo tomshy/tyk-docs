@@ -4,10 +4,8 @@ title: Dashboard API
 menu:
   main:
     parent: "Concepts"
-weight: 9 
+weight: 100 
 ---
-
-## Dashboard API Overview
 
 The Tyk Dashboard API is a superset of the Tyk Gateway API, enabling (almost) all of the core features and adding many more. The Dashboard API is also more granular and supports Access Control on a multi-tenant, and user basis.
 

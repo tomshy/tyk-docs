@@ -53,10 +53,59 @@ Instructions on setting SSO with Google+ will be added soon.
 - Instructions on setting SSO with Auth0    - will be added soon
 - Instructions on setting SSO with keycloak - will be added soon
 
-## <a name="tyk-dashboard"></a> Tyk's Dashboard Admin REST API for SSO
-Our SSO REST API allows you to implement custom authentication schemes for the Dashboard and Portal. Our Tyk Identity Broker (TIB) internally also uses this API. See [Dashboard Admin API SSO](https://tyk.io/docs/dashboard-admin-api/sso/) for more details.
+## <a name="tyk-dashboard"></a> Tyk's REST API for SSO
+
+The SSO API allows you to implement custom authentication schemes for the Dashboard and Portal. You can access the API by both admin and dashboard APIs.
+Our Tyk Identity Broker (TIB) internally also uses these APIs.
+
+### Generate authentication token
+
+The Dashboard exposes two APIs:
+
+- `/admin/sso` - See [Dashboard Admin API SSO](/docs/dashboard-admin-api/sso/) for more details.
+- `/api/sso` -  See [Dashboard API SSO](/docs/tyk-dashboard-api/sso/) for more details.
+
+which allow you to generate a temporary authentication token, valid for 60 seconds. They make same thing you can select one of them and use it.
+However, the admin API requires `admin-auth` header which should be same with `admin-secret` parameter in `tyk_analytics.conf`, the regular API requires `authorization` header which should be same with the user authentication token.  
+
+### Using the Token
+
+Once you have issued a token you can login to the dashboard using the `/tap` url, or to the portal using the `<portal-url>/sso` URL, and provide an authentication token via the `nonce` query param.
+If `nonce` is valid, Tyk will create a temporary user and log them in. 
+
+If you want to re-use existing dashboard users, instead of creating temporary ones, you can set `"sso_enable_user_lookup": true` variable in the Dashboard config file (`tyk_analytics.conf`). This way you can set individual permissions for users logged via SSO.
+
+#### Set up default permissions for the dashboard
+If you use the token with `dashboard` scope, and would like to avoid login in as admin user (which is the default permissions), you can add the `sso_permission_defaults` configuration option to the Dashboard config file (`tyk_analytics.conf`) to specify SSO user permissions in the following format:
+
+```
+"sso_permission_defaults": {
+  "analytics": "read",
+  "apis": "write",
+  "hooks": "write",
+  "idm": "write",
+  "keys": "write",
+  "policy": "write",
+  "portal": "write",
+  "system": "write",
+  "users": "write",
+  "user_groups": "write"
+}
+```
+
+As alternative, you can set `sso_default_group_id` to specify User Group ID assigned to SSO users.
+
+In order to set individual user permissions, you should first create this users in the dashboard first, set needed permissions, enable `sso_enable_user_lookup` to `true` inside dashboard config. If SSO user with the same email will be found in Dashboard users, it will re-use his permissions. 
+
+#### Sample Login Request
+
+```{.copyWrapper}
+GET /tap?nonce=YTNiOGUzZjctYWZkYi00OTNhLTYwODItZTAzMDI3MjM0OTEw HTTP/1.1
+Host: localhost:3000    
+```
+
 
 ## <a name="ldap"></a>SSO with LDAP Integration
-Detailed instruction on setting [SSO with LDAP](/docs/integrate/3rd-party-identity-providers/ldap/).
+Detailed instruction on setting [SSO with LDAP](/docs/integrate/sso/dashboard-login-ldap-tib/).
 
 See [apply search filters](https://tyk.io/docs/integrate/3rd-party-identity-providers/openldap/#a-name-ldap-search-filters-a-using-advanced-ldap-search) to add advanced search to your LDAP authentication.

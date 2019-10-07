@@ -9,7 +9,7 @@ weight: 6
 
 The Tyk Dashboard, Pump and Gateway use StatsD monitoring. StatsD is a network daemon that listens for statistics, like counters and timers, sent over UDP or TCP and sends aggregates to one or more pluggable backend services. For more information on StatsD see [here][1].
 
-Additionally, starting from 1.5, Gateway support NewRelic instrumentation, see below.
+Additionally, starting from Tyk Gateway v2.5, we support NewRelic instrumentation, see [NewRelic](#newrelic) for more details.
 
 ## <a name="settings"></a>Settings
 
@@ -39,7 +39,7 @@ Pump: `counters.<prefix>.record.count` (number of records processed by pump)
 
 ## <a name="newrelic"></a>NewRelic instrumentation
 
-Supported only by Tyk Gateway, starting from 2.5. Add the following config section to `tyk.conf` to make it work:
+Supported only by the Tyk Gateway, starting from v2.5. Add the following config section to `tyk.conf` to make it work:
 ```
 "newrelic": {
   "app_name": "<app-name>",

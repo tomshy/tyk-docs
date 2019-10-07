@@ -13,6 +13,8 @@ If you wish to reduce or manage the amount of data in your MongoDB, you can  add
 
 To add an expiry index to your analytics log data simply follow these three steps.
 
+> **NOTE**: Time based caps (TTL indexes) are incompatible with already configured size based caps.
+
 ### Step 1: Add the Index to MongoDB
 
 Run the following command in your preferred MongoDB tool:
@@ -62,7 +64,9 @@ curl --header "x-tyk-authorization: {tyk-gateway-secret}" --header "content-type
 
 >  **Note**: The size value should be in bytes, and we recommend using a value just under the amount of RAM on your machine.
 
-Run this [command]( https://docs.mongodb.com/manual/reference/command/convertToCapped/ ) in your MongoDB shell:
+
+Run this [command](https://docs.mongodb.com/manual/reference/command/convertToCapped/) in your MongoDB shell:
+
 
 ```{.copyWrapper}
 use tyk_analytics

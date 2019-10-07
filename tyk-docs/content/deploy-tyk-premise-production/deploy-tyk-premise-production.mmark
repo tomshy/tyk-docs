@@ -181,26 +181,65 @@ You can calculate the right value using a straightforward formula:
 
 if the latency between Tyk and your Upstream is around 50ms, then a single connection can handle 1s / 50s = 20 requests. So if you plan to handle 2000 requests per second using Tyk, the size of your connection pool should be at least 2000 / 20 = 100. For example, on low-latency environments (like 5ms), a connection pool of 100 connections will be enough for 20k RPS.
 
-
 ### Use the right hardware
 
 Tyk is CPU-bound, you will get exponentially better performance the more cores you throw at Tyk - it's that simple. Tyk will automatically spread itself across all cores to handle traffic, but if expensive operations like health-checks are enabled, then those can cause keyspace contention, so again, while it helps, health-checks do throttle throughput.
 
 ### Resource limits
 
-Make sure your system has resource limits set to handle lots of inbound traffic.
+Make sure your host operating system has resource limits set to handle an appropriate number of connections.
 
-{{./static/include/file-handles.md}}
+You can increase the maximum number of files available to the kernel by modifying `/etc/sysctl.conf`.
 
-#### TCP connection recycling
-
-Use this at your own peril - it's not always recommended and you need to be sure it fits your use case, but you can squeeze a bit more performance out of a Gateway install by running this on the command line:
-
-```{.copyWrapper}
-sysctl -w net.ipv4.tcp_tw_recycle=1
+```text
+fs.file-max=160000
 ```
 
-Careful with it though, it could lead to unterminated connections.
+Please note that a single file, with associated inode & dcache consumes approximately 1KB ram. As such, setting
+`fs.file-max=160000` will consume a maximum of 160MB ram.
+
+The changes will apply after a system reboot, but if you do not wish to reboot quite yet, you can apply the change
+for the current session using `echo 160000 > /proc/sys/fs/file-max`.
+
+### File Handles / File Descriptors
+Now we need to configure the file handles available to your Tyk services.
+
+#### systemd
+Override your `systemd` unit files for each of the Tyk services using `systemctl edit {service_name}`.
+
+* Gateway `systemctl edit tyk-gateway.service`
+* Dashboard `systemctl edit tyk-dashboard.service`
+* Pump `systemctl edit tyk-pump.service`
+* Multi Data-Centre Bridge `systemctl edit tyk-sink.service`
+
+You may then add `LimitNOFILE=80000` to the `[Service]` directive as follows:
+
+```text
+[Service]
+LimitNOFILE=80000
+```
+
+After making these changes, you will need to restart your service, for example:
+
+```bash
+systemctl restart tyk-gateway.service
+```
+
+#### Docker
+
+You may set ulimits in a container using the `--ulimit` option. See
+<a href="https://docs.docker.com/engine/reference/commandline/run/#set-ulimits-in-container---ulimit" target="_blank">Docker documentation</a> for setting ulimits.
+
+```bash
+docker run --ulimit nofile=80000:80000 \
+  -it --name tyk-gateway \
+  tykio/tyk-gateway:latest
+```
+
+#### Other
+
+If you are not using systemd or Docker, please consult your Operating System documentation for controlling the Number of
+File Descriptors available for your process.
 
 ### File modification at runtime
 
@@ -215,4 +254,3 @@ Understanding what files are created or modified by the Dashboard and Gateway du
  [3]: /docs/img/diagrams/deployGraphVanilla.png
  [5]: https://docs.mongodb.com/manual/core/capped-collections/
  [6]: https://docs.mongodb.com/manual/reference/command/convertToCapped/
-

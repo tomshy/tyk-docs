@@ -12,6 +12,8 @@ The Tyk Developer Portal can be fully customised using templates. The templates 
 
 All templates are based on Twitter Bootstrap and are standard HTML with some Golang Template snippets to handle dynamic content rendering.
 
+> **NOTE**: The Portal process (`tyk-analytics`) must be restarted for template changes to take effect. This is because the application caches templates on startup.
+
 ### Adding new templates
 
 The Tyk content editor enables you to specify a template name to use when rendering templates. two are provided by default:

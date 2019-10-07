@@ -119,6 +119,13 @@ If `SMTPUsername` or `SMTPPassword` is omitted, Tyk assumes that authentication 
 
 In an On-Premises installation you have full access to the HTML template, allowing you further customisation.
 
+#### Portal Manager Email Settings
+
+![Portal-Manager-Email][3]
+
+1. Select **Settings** from your **Dashboard** > **Portal Management**
+2. From the **Portal manager email address** section, enter the email address of the person responsible for approving your developer API subscription requests. See [Portal Key Requests](/docs/tyk-developer-portal/portal-concepts/#a-name-key-requests-a-key-requests) for more details.
+
 
 
 
@@ -128,5 +135,6 @@ In an On-Premises installation you have full access to the HTML template, allowi
 
 [1]: /docs/img/dashboard/portal-management/email_key_approval.png
 [2]: /docs/img/dashboard/portal-management/email_image.png
+[3]: /docs/img/dashboard/portal-management/portal-email-address.png
 
 

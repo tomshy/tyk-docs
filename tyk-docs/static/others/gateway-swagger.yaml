@@ -10,7 +10,6 @@ info:
     The Tyk Gateway API is capable of:
 
     * Managing session objects (key generation)
-    * Managing and listing policies
     * Managing and listing API Definitions (only when not using the Dashboard)
     * Hot reloads / reloading a cluster configuration
     * OAuth client creation (only when not using the Dashboard)

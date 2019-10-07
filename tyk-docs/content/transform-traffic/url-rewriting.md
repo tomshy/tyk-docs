@@ -36,7 +36,7 @@ To rewrite a URL with the API Definition, you must add a new object to the `exte
 
 *   `match_pattern`: This is the actual capture group to generate. This is a pure regex, in this case we are capturing two word groups.
 
-*   `rewrite_to`: Each capture group you specify is designated with an index, and then made available in the `rewrite_to` template. Here `$n` will map against each value found in the capture group, so in the above example, the rewrite will be:
+*   `rewrite_to`: Each capture group you specify in `match_pattern` is designated with an index, and then made available in the `rewrite_to` template. Here `$n` will map against each value found in the capture group, so in the above example, the rewrite will be:
 
 ```{.copyWrapper}
 my/service?value1=match&value2=me

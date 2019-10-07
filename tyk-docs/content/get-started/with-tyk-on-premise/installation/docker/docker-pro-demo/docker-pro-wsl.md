@@ -12,6 +12,9 @@ weight: 2
 This demo will run Tyk On-Premises on your machine, which contains 5 containers: Tyk Gateway, Tyk Dashboard, Tyk Pump, Redis and MongoDB.
 This demo is great for proof of concept and demo purposes, but if you want to test performance, you need to move each component to a separate machine.
 
+> **NOTE**: You use this at your own risk. Tyk is not supported on the Windows platform. However you can test it as a proof of concept using our Pro Demo Docker installation.
+
+
 ## Prerequisites
 
 * MS Windows 10 Pro with [Windows Linux Subsystem](https://docs.microsoft.com/en-us/windows/wsl/install-win10) enabled

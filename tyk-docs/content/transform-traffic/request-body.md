@@ -29,7 +29,9 @@ Setting up transforms in your API definition is easy:
       "method": "POST",
       "template_data": {
         "template_mode": "file",
-        "template_source": "./templates/transform_test.tmpl"
+        "template_source": "./templates/transform_test.tmpl",
+        "input_type": "json",
+        "enable_session": true,
       }
     }
   ]
@@ -43,9 +45,9 @@ The field representations are:
 *   `path`: The path to match.
 *   `method` : The method to match.
 *   `template_data.input_type`: Either `xml` or `json`, this represents the type of data the parser should expect.
-*   `enable_session`: This makes session metadata available to the transform template (see the section on session data below).
-*   `template_source`: Either a file path, or a `base64` encoded representation of your template.
-*   `template_mode`: Set to `blob` for a base64 template and `file` for a file path in the template source.
+*   `template_data.enable_session`: This makes session metadata available to the transform template (see the section on session data below).
+*   `template_data.template_source`: Either a file path, or a `base64` encoded representation of your template.
+*   `template_data.template_mode`: Set to `blob` for a base64 template and `file` for a file path in the template source.
 
 ## <a name="with-dashboard"></a> Modification with the Dashboard
 

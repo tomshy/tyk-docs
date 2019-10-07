@@ -126,6 +126,7 @@ The key attributes for LDAP profile are:
 
 * `ID`: The ID by which we will activate the profile by calling the appropriate TIB endpoint
 * `OrgId`: The organisation id which the profile is connected to - make sure this is the correct id for your organisation (see the [Dashboard Admin API documentation](https://tyk.io/docs/dashboard-admin-api/organisations/) for details on how to retrieve this)
+* `IdentityHandlerConfig.DashboardCredential`: The Dashboard API Access credential which is used as authorization header
 * `ProviderConfig.FailureRedirect`: The URL which TIB will redirect to if the authentication fails
 * `ProviderConfig.LDAPPort`: The port through which TIB can communicate with your LDAP server
 * `ProviderConfig.LDAPServer`: The URL through which TIB can communicate with your LDAP server
@@ -140,6 +141,9 @@ The `profiles.json` for this example is as follows (again, update values for you
     "ActionType": "GenerateOrLoginUserProfile",
     "ID": "1",
     "OrgID": "59bfdf5b56c02c065d24638e",
+    "IdentityHandlerConfig": {
+        "DashboardCredential": "bb5735026be4400e67ed9801c2f1e2f9"
+    },
     "ProviderConfig": {
       "FailureRedirect": "http://my-tyk-instance.com:3000/?fail=true",
       "LDAPAttributes": [],
@@ -280,7 +284,9 @@ The request returns the data for profile 1, which for this example is:
       "LDAPServer": "ldap.forumsys.com",
       "LDAPUserDN": "cn=*USERNAME*,dc=example,dc=com"
     },
-    "IdentityHandlerConfig": null,
+    "IdentityHandlerConfig": {
+        "DashboardCredential": "bb5735026be4400e67ed9801c2f1e2f9"
+    },
     "ProviderConstraints": {
       "Domain": "",
       "Group": ""
